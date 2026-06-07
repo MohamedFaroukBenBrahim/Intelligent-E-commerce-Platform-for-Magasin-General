@@ -1,0 +1,129 @@
+
+<app-admin-sidebar></app-admin-sidebar>
+<div class="ml-14 md:ml-64 mt-14 min-h-screen bg-gray-100">
+  <main class="flex-1 p-8">
+    <!-- Header -->
+    <div class="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+      <h1 class="text-3xl font-bold text-gray-800">Reviews</h1>
+      <p class="text-gray-500 mt-1">Manage all customer reviews</p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center">
+        <input
+          type="search"
+          [(ngModel)]="searchtext"
+          (ngModelChange)="search()"
+          class="bg-white shadow-sm rounded border border-gray-200 px-4 py-2 text-sm w-full sm:w-80 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          placeholder="Search reviews..."
+        />
+
+        <select
+          [(ngModel)]="selectedRating"
+          (change)="search()"
+          class="bg-white shadow-sm rounded border border-gray-200 px-4 py-2 text-sm"
+        >
+          <option value="all">All ratings</option>
+          <option *ngFor="let rating of ratingOptions" [value]="rating">{{ rating }} stars</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="flex justify-center items-center h-64">
+      <div class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="!isLoading && reviews.length === 0" class="text-center py-24 text-gray-400">
+      <svg class="w-16 h-16 mx-auto mb-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+      </svg>
+      <p class="text-xl font-semibold">No reviews found</p>
+    </div>
+
+    <!-- Reviews List -->
+    <div *ngIf="!isLoading && reviews.length > 0" class="space-y-4">
+      <div
+        *ngFor="let review of reviews"
+        class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex gap-6 hover:shadow-md transition-shadow"
+      >
+        <!-- Product Image -->
+        <div class="shrink-0">
+          <img
+            [src]="review.productImageUrl || 'assets/placeholder.png'"
+            [alt]="review.productName"
+            class="w-24 h-24 rounded-xl object-cover border border-gray-200"
+          />
+          <p class="text-xs text-center text-gray-500 mt-1 font-medium truncate w-24">
+            {{ review.productName }}
+          </p>
+        </div>
+
+        <!-- Review Content -->
+        <div class="flex-1 min-w-0">
+          <!-- User Info + Date -->
+          <div class="flex items-center gap-3 mb-3">
+            <img
+              [src]="review.userProfilePicture || 'assets/default-avatar.png'"
+              [alt]="review.username"
+              class="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
+            />
+            <div>
+              <p class="font-semibold text-gray-800 text-sm">{{ review.username }}</p>
+              <p class="text-xs text-gray-400">{{ review.createdAt | date: 'MMM d, y' }}</p>
+            </div>
+          </div>
+
+          <!-- Stars -->
+          <div class="flex gap-0.5 mb-3">
+            <ng-container *ngFor="let star of getStars(review.rating)">
+              <svg
+                class="w-4 h-4"
+                [class.text-yellow-400]="star <= review.rating"
+                [class.text-gray-200]="star > review.rating"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+            </ng-container>
+            <span class="text-xs text-gray-400 ml-1 self-center">({{ review.rating }}/5)</span>
+          </div>
+
+          <!-- Comment -->
+          <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">{{ review.comment }}</p>
+
+          <!-- Dates -->
+          <p class="text-xs text-gray-300 mt-2" *ngIf="review.updatedAt">
+            Last edited: {{ review.updatedAt | date: 'MMM d, y' }}
+          </p>
+        </div>
+
+        <!-- Delete Button -->
+        <div class="shrink-0 flex items-start">
+          <button
+            (click)="deleteReview(review.id!)"
+            [disabled]="deletingId === review.id"
+            class="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 font-semibold text-sm px-4 py-2 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <!-- Trash icon -->
+            <svg *ngIf="deletingId !== review.id" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+            <!-- Spinner -->
+            <svg *ngIf="deletingId === review.id" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+            </svg>
+            {{ deletingId === review.id ? 'Deleting...' : 'Delete' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+</div>

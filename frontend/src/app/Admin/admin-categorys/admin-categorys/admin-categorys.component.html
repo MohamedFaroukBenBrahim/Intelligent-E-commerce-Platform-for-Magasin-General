@@ -1,0 +1,52 @@
+<app-admin-sidebar></app-admin-sidebar>
+
+<div class="ml-14 md:ml-64 mt-14 min-h-screen bg-gray-100">
+  <div class="w-full container xl:w-11/12 px-4 mx-auto py-8">
+    <div class="flex flex-col w-full mb-6 shadow-lg rounded bg-white">
+      <header class="rounded-t mb-0 px-4 py-3 border-0">
+        <div class="flex flex-wrap justify-between items-center gap-2">
+          <h1 class="font-semibold text-2xl text-zinc-700 mr-2">Categories</h1>
+          <input type="search" [(ngModel)]="searchtext" (ngModelChange)="search()" class="bg-gray-100 shadow rounded border border-gray-200 p-2 text-sm w-140 focus:outline-none focus:ring-2 focus:ring-blue-400"placeholder="Search categories..."/>
+          <button [routerLink]="['/admin-addcategory']" type="button" class="rounded-md border-2 border-blue-600 px-6 py-1 bg-blue-600 font-medium text-white transition-colors hover:bg-white hover:text-blue-600 cursor-pointer">ADD</button>
+        </div>
+      </header>
+      <div class="px-4 pb-5 overflow-x-auto">
+        <table class="w-full min-w-max text-sm text-left">
+          <thead>
+            <tr class="border-b border-purple-600 text-slate-600 font-bold">
+              <th class="px-2 py-3 text-center">ID</th>
+              <th class="px-2 py-3 text-center">Name</th>
+              <th class="px-2 py-3 text-center">Description</th>
+              <th class="px-2 py-3 text-center">Created At</th>
+              <th class="px-2 py-3 text-center">Edit</th>
+              <th class="px-2 py-3 text-center">Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let category of categorylist" class="border-b last:border-0 hover:bg-gray-50">
+              <td class="px-2 py-3 text-center text-zinc-500">{{category.id}}</td>
+              <td class="px-2 py-3 text-center text-zinc-500 max-w-32">
+                <p class="truncate" title="{{category.name}}">{{category.name}}</p>
+              </td>
+              <td class="px-2 py-3 text-center text-zinc-500 max-w-64">
+                <p class="truncate" title="{{category.description}}">{{category.description}}</p>
+              </td>
+
+              <td class="px-2 py-3 text-center text-zinc-500 text-xs whitespace-nowrap">
+                {{category.createdAt | date:'yyyy-MM-dd HH:mm'}}
+              </td>
+
+              <td class="px-2 py-3 text-center">
+                <button type="button" class="border-2 border-green-400 px-4 py-1 bg-green-400 text-sm font-medium text-white rounded-md transition-colors hover:bg-white hover:text-green-400 cursor-pointer" [routerLink]="['/admin-editcategory/', category.id]">Edit</button>
+              </td>
+
+              <td class="px-2 py-3 text-center">
+                <button type="button" class="border-2 border-red-600 px-4 py-1 bg-red-600 text-sm font-medium text-white rounded-md transition-colors hover:bg-white hover:text-red-600 cursor-pointer" (click)="delete(category.id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

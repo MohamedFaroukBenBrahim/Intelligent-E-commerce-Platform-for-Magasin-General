@@ -1,0 +1,89 @@
+<app-rh-navbar></app-rh-navbar>
+
+<div class="bg-slate-50 relative overflow-x-hidden min-h-screen">
+  <!-- Hero Section -->
+  <div class="relative w-full p-28 overflow-hidden bg-linear-to-br from-teal-600 to-teal-800">
+    <img *ngIf="heroBlog?.imageUrl" [src]="heroBlog?.imageUrl" alt="Hero" class="absolute inset-0 w-full h-full object-cover opacity-40"/>
+    <div class="absolute inset-0 bg-linear-to-b from-teal-600/80 via-teal-700/60 to-teal-900/80"></div>
+    
+    <div class="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
+      <span class="text-teal-100 uppercase tracking-[0.3em] text-sm font-semibold mb-4">{{ heroBlog?.type || 'Blog' }}</span>
+      <h1 class="text-white text-5xl md:text-7xl font-extrabold leading-tight max-w-4xl mb-6">{{ heroBlog?.title || 'HR Insights & Resources' }}</h1>
+      <p class="text-teal-50 text-lg md:text-xl max-w-2xl leading-relaxed mb-10 line-clamp-3">{{ heroBlog?.content || 'Explore our latest HR articles and recruitment insights' }}</p>
+      <div class="flex gap-4">
+        <a *ngIf="heroBlog?.id" [routerLink]="['/RH-blogdetail', heroBlog?.id]" class="bg-white hover:bg-slate-100 text-teal-700 font-semibold px-8 py-3 rounded-full transition shadow-lg">Read Full Article</a>
+      </div>
+    </div>
+
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
+      <svg class="w-6 h-6 text-white opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Articles Section -->
+  <section id="articles" class="px-6 lg:px-16 py-24 relative z-10">
+    <div class="text-center mb-16">
+      <span class="text-teal-600 uppercase tracking-widest text-sm font-semibold">Latest</span>
+      <h2 class="text-4xl font-extrabold text-slate-900 mt-2 mb-8">Recent HR Articles</h2>
+      <div class="flex items-center justify-center gap-4">
+        <input 
+          [(ngModel)]="searchtext" 
+          (ngModelChange)="search()" 
+          type="search" 
+          class="bg-white shadow rounded border border-slate-200 p-3 w-full max-w-md" 
+          placeholder="Search articles...">
+        <select [(ngModel)]="selectedType" (change)="search()" class="bg-white border rounded p-2 text-sm">
+          <option value="all">All</option>
+          <option *ngFor="let t of types" [value]="t">{{t}}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex items-center justify-center py-12">
+      <p class="text-slate-400 text-sm tracking-widest uppercase">Loading articles...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && bloglist.length === 0" class="text-center py-12">
+      <p class="text-slate-500 text-base">No articles found. Check back soon!</p>
+    </div>
+
+
+<!-- Articles Grid -->
+    <div *ngIf="!loading && bloglist.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+    <article *ngFor="let blog of bloglist.slice(0,-1).reverse()" 
+            class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300">
+        <div class="relative">
+        
+        <!-- Full-width tall image -->
+        <img 
+            *ngIf="blog.imageUrl"
+            [src]="blog.imageUrl" 
+            alt="{{ blog.title }}"
+            class="h-36 w-full aspect-3/2 lg:aspect-3/4 lg:h-128 object-cover shadow-lg rounded-2xl">
+        <div *ngIf="!blog.imageUrl" 
+            class="h-36 w-full aspect-3/2 lg:aspect-3/4 lg:h-128 bg-linear-to-br from-teal-100 to-teal-50 flex items-center justify-center shadow-lg rounded-2xl">
+            <svg class="w-12 h-12 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+            </svg>
+        </div>
+
+        <!-- Content panel: overlaps image, hangs off the right -->
+        <div class="lg:rounded-l-[30px] lg:rounded-t-[30px] bg-white lg:absolute bottom-8 -right-14 lg:w-76 px-8 py-6 lg:h-96 shadow">
+            <span class="inline-block text-sm text-slate-500">{{ blog.createdAt | date}}</span>
+            <h2 class="text-2xl font-bold leading-tight mt-1.5 mb-2.5 text-slate-900">{{ blog.title }}</h2>
+            <span class="inline-block text-teal-600 text-sm capitalize font-semibold">{{ blog.type }}</span>
+            <p class="text-slate-700 mt-7 mb-7 lg:mb-14 leading-relaxed line-clamp-3">{{ blog.content }}</p>
+            <a [routerLink]="['/RH-blogdetail', blog.id]" 
+            class="flex justify-end items-center uppercase text-teal-700 font-semibold text-sm hover:underline">
+            <span class="mr-4 block w-10 h-0.5 bg-teal-700"></span>Read More
+            </a>
+        </div>
+        </div>
+    </article>
+    </div>
+  </section>
+</div>

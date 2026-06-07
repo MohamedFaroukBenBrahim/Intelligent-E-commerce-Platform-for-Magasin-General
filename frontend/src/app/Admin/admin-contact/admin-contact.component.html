@@ -1,0 +1,74 @@
+<app-admin-sidebar></app-admin-sidebar>
+
+<div class="ml-14 md:ml-64 mt-14 min-h-screen bg-gray-100">
+  <div class="w-full container xl:w-11/12 px-4 mx-auto py-8">
+    <div class="flex flex-col w-full mb-6 shadow-lg rounded bg-white">
+
+      <header class="rounded-t mb-0 px-4 py-3 border-0">
+        <div class="flex flex-wrap justify-between items-center gap-4">
+          <h1 class="font-semibold text-2xl text-zinc-700">Contact Messages</h1>
+          <input type="search" [(ngModel)]="searchText" (keyup)="search()" class="bg-gray-100 shadow rounded border border-gray-200 p-2 text-sm w-40 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Search contact..."/>
+        </div>
+      </header>
+
+      <!-- Filters -->
+      <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
+        <div class="flex flex-wrap gap-6 items-center">
+          <div>
+            <span class="font-semibold text-sm text-zinc-600 mr-3">Status:</span>
+            <label class="inline-flex items-center mr-4">
+              <input type="radio" name="readStatus" value="all" [(ngModel)]="selectedReadStatus" (change)="search()" class="w-4 h-4 accent-blue-500 cursor-pointer">
+              <span class="ml-2 text-sm">All</span>
+            </label>
+            <label class="inline-flex items-center mr-4">
+              <input type="radio" name="readStatus" value="unread" [(ngModel)]="selectedReadStatus" (change)="search()" class="w-4 h-4 accent-yellow-500 cursor-pointer">
+              <span class="ml-2 text-sm">Unread</span>
+            </label>
+            <label class="inline-flex items-center">
+              <input type="radio" name="readStatus" value="read" [(ngModel)]="selectedReadStatus" (change)="search()" class="w-4 h-4 accent-green-500 cursor-pointer">
+              <span class="ml-2 text-sm">Read</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table with horizontal scroll -->
+      <div class="px-4 pb-5">
+        <table class="w-full text-xs text-left">
+          <thead>
+            <tr class="border-b border-purple-600 text-slate-600 font-bold">
+              <th class="px-1 py-2 text-center">ID</th>
+              <th class="px-1 py-2 text-center">Subject</th>
+              <th class="px-1 py-2 text-center">Name</th>
+              <th class="px-1 py-2 text-center">Email</th>
+              <th class="px-1 py-2 text-center">message</th>
+              <th class="px-1 py-2 text-center">Created At</th>
+              <th class="px-1 py-2 text-center">read</th>
+              <th class="px-1 py-2 text-center">Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let contact of contacts" class="border-b last:border-0 hover:bg-gray-50 text-xs">
+              <td class="px-1 py-2 text-center text-zinc-500">{{contact.id}}</td>
+              <td class="px-1 py-2 text-center text-zinc-500 max-w-xs"><p class="truncate">{{contact.subject}}</p></td>
+              <td class="px-1 py-2 text-center text-zinc-500">{{contact.name}}</td>
+              <td class="px-1 py-2 text-center">{{contact.email}}</td>
+              <td class="px-1 py-2 text-center">{{contact.message}}</td>
+              <td class="px-1 py-2 text-center">{{contact.createdAt | date:'yyyy-MM-dd HH:mm'}}</td>
+              <!-- read Toggle -->
+              <td class="px-2 py-3 text-center">
+                <button (click)="read(contact.id)" type="button" class="cursor-pointer border-2 px-2 py-1 text-sm font-medium rounded" *ngIf="!contact.read" [ngClass]="'bg-yellow-300 px-4 py-1 border-yellow-400 text-white hover:bg-yellow-400'" >unread</button>
+                <button type="button" class="cursor-pointer border-2 px-2 py-1 text-sm font-medium rounded " *ngIf="contact.read"  [ngClass]="'bg-green-300 px-4 py-1 border-green-400 text-white '" disabled>read</button>
+              </td>
+              <td class="px-2 py-3 text-center">
+                <button (click)="delete(contact.id)" type="button" class="border-2 border-red-600 px-4 py-1 bg-red-600 text-sm font-medium text-white rounded-md transition-colors hover:bg-white hover:text-red-600 cursor-pointer">Delete</button>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>

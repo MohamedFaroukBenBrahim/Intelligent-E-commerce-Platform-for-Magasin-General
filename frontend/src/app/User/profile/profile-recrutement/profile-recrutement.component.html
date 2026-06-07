@@ -1,0 +1,242 @@
+<app-nav-bar></app-nav-bar>
+<div class="min-h-screen bg-slate-50 font-sans">
+  <div class="max-w-7xl mx-auto px-4 py-10 flex flex-col lg:flex-row gap-8">
+    <app-profile-sidebar></app-profile-sidebar>
+    <main class="flex-1 min-w-0 space-y-6">
+
+      <div *ngIf="loading" class="flex justify-center py-20">
+        <div class="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin" style="border-color:#18a2cd; border-top-color:transparent;"></div>
+      </div>
+
+      <div *ngIf="!loading">
+
+        <!-- CV Section -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+          <div class="relative px-8 pt-8 pb-6 border-b border-slate-100 overflow-hidden">
+            <div class="absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-10 bg-yellow-400"></div>
+            <div class="flex gap-1.5 mb-3">
+              <span class="w-5 h-1 rounded-full bg-yellow-400"></span>
+              <span class="w-3 h-1 rounded-full bg-red-500"></span>
+              <span class="w-2 h-1 rounded-full bg-green-400"></span>
+            </div>
+            <h3 class="text-xl font-black text-slate-800 mb-1">My CV</h3>
+            <p class="text-slate-400 text-sm">Upload your CV to apply for job offers. Only PDF files are accepted.</p>
+          </div>
+
+          <div class="p-8">
+            <div *ngIf="showCvSuccess" class="flex items-center gap-3 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm mb-5">
+              <div class="w-7 h-7 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+              </div>
+              CV uploaded successfully!
+            </div>
+
+            <div *ngIf="showError" class="flex items-center gap-3 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm mb-5">
+              <div class="w-7 h-7 rounded-lg bg-red-100 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </div>
+              {{ errorMsg }}
+            </div>
+
+            <div *ngIf="profile.cvUrl" class="flex items-center gap-4 rounded-2xl px-5 py-4 mb-5 border" style="background:#e8f7fc; border-color:#b3dff0;">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:#18a2cd;">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-bold text-slate-800">CV Uploaded</p>
+                <p class="text-xs text-slate-400 mt-0.5">Your CV is ready. You can replace it anytime.</p>
+              </div>
+              <a [href]="profile.cvUrl" target="_blank"
+                class="text-xs font-bold px-3 py-1.5 rounded-lg transition-colors border"
+                style="color:#18a2cd; border-color:#b3dff0; background:white;">
+                View CV
+              </a>
+            </div>
+
+            <div *ngIf="!profile.cvUrl" class="flex items-center gap-4 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4 mb-5">
+              <div class="w-10 h-10 bg-amber-400 rounded-xl flex items-center justify-center shrink-0">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-amber-800">No CV uploaded yet</p>
+                <p class="text-xs text-amber-600 mt-0.5">You must upload a CV before applying to any job offer.</p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+              <label class="flex-1 flex items-center gap-3 border-2 border-dashed border-slate-200 rounded-2xl px-5 py-4 cursor-pointer hover:border-sky-300 transition-colors" >
+                <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                </svg>
+                <span class="text-sm text-slate-500">{{ fileName ? fileName : 'Choose PDF file...' }}</span>
+                <input type="file" accept=".pdf" class="hidden" (change)="onFileSelected($event)">
+              </label>
+              <button (click)="uploadCv()" [disabled]="!selectedFile || uploading"
+                class="flex items-center gap-2 px-5 py-3 text-white text-sm font-bold rounded-xl transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                style="background: linear-gradient(135deg, #18a2cd, #0f6e8a);">
+                <svg *ngIf="uploading" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                </svg>
+                {{ uploading ? 'Uploading...' : 'Upload CV' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Info Section -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+          <div class="relative px-8 pt-8 pb-6 border-b border-slate-100 overflow-hidden">
+            <div class="absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-10" style="background:#18a2cd;"></div>
+            <div class="flex gap-1.5 mb-3">
+              <span class="w-5 h-1 rounded-full" style="background:#18a2cd;"></span>
+              <span class="w-3 h-1 rounded-full bg-green-400"></span>
+              <span class="w-2 h-1 rounded-full bg-yellow-400"></span>
+            </div>
+            <h3 class="text-xl font-black text-slate-800 mb-1">Candidate Profile</h3>
+            <p class="text-slate-400 text-sm">Add your professional title and bio to stand out.</p>
+          </div>
+
+          <div class="p-8">
+            <div *ngIf="showSuccess" class="flex items-center gap-3 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm mb-5">
+              <div class="w-7 h-7 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+              </div>
+              Profile saved successfully!
+            </div>
+
+            <div class="space-y-5">
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Professional Title</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                  </span>
+                  <input [(ngModel)]="title" type="text" placeholder="e.g. Full Stack Developer"
+                    class="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl text-slate-800 text-sm focus:outline-none focus:ring-2 focus:border-transparent transition"
+                    style="--tw-ring-color: #18a2cd;">
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Bio</label>
+                <textarea [(ngModel)]="bio" rows="4" placeholder="Tell recruiters about yourself..."
+                  class="block w-full px-4 py-3 text-sm text-slate-700 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent resize-none transition"
+                  style="--tw-ring-color: #18a2cd;">
+                </textarea>
+              </div>
+              <div class="flex justify-end pt-4 border-t border-slate-100">
+                <button (click)="saveProfile()" [disabled]="saving"
+                  class="flex items-center gap-2 px-6 py-2.5 text-white text-sm font-bold rounded-xl shadow-sm transition hover:opacity-90 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                  style="background: linear-gradient(135deg, #18a2cd, #0f6e8a);">
+                  <svg *ngIf="saving" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                  </svg>
+                  {{ saving ? 'Saving...' : 'Save Profile' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- My Applications Section -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+          <div class="relative px-8 pt-8 pb-6 border-b border-slate-100 overflow-hidden">
+            <div class="absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-10 bg-red-500"></div>
+            <div class="flex gap-1.5 mb-3">
+              <span class="w-5 h-1 rounded-full bg-red-500"></span>
+              <span class="w-3 h-1 rounded-full bg-yellow-400"></span>
+              <span class="w-2 h-1 rounded-full" style="background:#18a2cd;"></span>
+            </div>
+            <h3 class="text-xl font-black text-slate-800 mb-1">My Applications</h3>
+            <p class="text-slate-400 text-sm">Track the status of your job applications</p>
+          </div>
+          <div class="p-8">
+            <!-- Loading -->
+            <div *ngIf="loadingApplications" class="flex justify-center py-8">
+              <div class="w-7 h-7 border-4 border-t-transparent rounded-full animate-spin"
+                style="border-color:#18a2cd; border-top-color:transparent;"></div>
+            </div>
+
+            <!-- Empty -->
+            <div *ngIf="!loadingApplications && applications.length === 0"
+              class="text-center py-10 text-slate-400">
+              <svg class="w-12 h-12 mx-auto mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+              <p class="font-semibold">No applications yet</p>
+              <p class="text-sm mt-1">Start applying to job offers to see them here</p>
+              <a [routerLink]="['/listProducts']"
+                class="inline-flex items-center gap-2 mt-4 text-xs font-bold px-4 py-2 rounded-xl text-white transition hover:opacity-90"
+                style="background: linear-gradient(135deg, #18a2cd, #0f6e8a);">
+                Browse Job Offers
+              </a>
+            </div>
+
+            <!-- Applications list -->
+            <div *ngIf="!loadingApplications && applications.length > 0" class="space-y-3">
+              <div *ngFor="let app of applications"
+                class="border border-slate-100 rounded-2xl overflow-hidden hover:shadow-sm transition-shadow">
+
+                <!-- Color bar -->
+                <div class="flex h-0.5">
+                  <span class="flex-1" [ngClass]="{
+                    'bg-yellow-400': app.status === 'PENDING',
+                    'bg-green-500': app.status === 'ACCEPTED',
+                    'bg-red-500': app.status === 'REJECTED'
+                  }"></span>
+                </div>
+
+                <div class="flex items-center gap-4 px-5 py-4">
+                  <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style="background:#e8f7fc;">
+                    <svg class="w-5 h-5" style="color:#18a2cd;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-black text-slate-800 truncate">{{ app.jobOfferTitle }}</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Applied {{ app.appliedAt | date:'MMM d, y' }}</p>
+                    <p *ngIf="app.coverLetter" class="text-xs text-slate-500 mt-1 truncate italic">
+                      "{{ app.coverLetter }}"
+                    </p>
+                  </div>
+                  <!-- Status badge -->
+                  <div class="shrink-0 flex flex-col items-end gap-2">
+                    <span [ngClass]="{
+                      'bg-yellow-50 text-yellow-700 border-yellow-200': app.status === 'PENDING',
+                      'bg-green-50 text-green-700 border-green-200': app.status === 'ACCEPTED',
+                      'bg-red-50 text-red-600 border-red-200': app.status === 'REJECTED'
+                    }" class="text-xs font-black px-3 py-1 rounded-full border uppercase tracking-wide">
+                      {{ app.status }}
+                    </span>
+                    <!-- Status description -->
+                    <p class="text-xs text-slate-400 text-right">
+                      <span *ngIf="app.status === 'PENDING'">Under review</span>
+                      <span *ngIf="app.status === 'ACCEPTED'" class="text-green-600 font-semibold">Congratulations!</span>
+                      <span *ngIf="app.status === 'REJECTED'" class="text-red-400">Not selected</span>
+                    </p>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+<app-footer></app-footer>

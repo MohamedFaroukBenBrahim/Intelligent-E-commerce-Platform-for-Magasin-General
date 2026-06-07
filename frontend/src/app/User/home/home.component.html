@@ -1,0 +1,333 @@
+<div class="bg-[url('/assets/home1.jpg')] bg-cover bg-center h-190" >
+    <app-nav-bar></app-nav-bar>
+
+<!-- First screen y yahya  -->
+    <div class="flex flex-col lg:flex-row min-h-screen">
+        <div class="w-full lg:w-1/2 flex items-center justify-center py-12 lg:py-0">
+            <div class="text-center max-w-2xl px-4 sm:px-8">
+                <div class="flex items-center justify-center mb-4 flex-wrap">
+                    <h1 class="text-[#D70D0D] font-bold text-5xl sm:text-6xl md:text-7xl lg:text-[90px] leading-none tracking-[-0.05em]">Freshy</h1>
+                    <img src="/assets/logo.png" class="h-12 sm:h-16 md:h-20 lg:h-22.5 mx-2" alt="Logo">
+                    <h1 class="text-[#D70D0D] font-bold text-5xl sm:text-6xl md:text-7xl lg:text-[90px] leading-none tracking-[-0.05em]">26</h1>
+                </div>
+                <h2 class="text-[#0D8DD7] font-mono font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-4 sm:mb-6">Your World of Shopping, 2026</h2>
+                <p class="font-mono text-sm sm:text-base lg:text-lg text-gray-700 mb-6 sm:mb-8 px-4">The journey to the best shopping experience starts, Where the future of shopping begins</p>
+                <div class="flex justify-center">
+                    <button [routerLink]="('/listProducts')" class="bg-linear-to-r from-[#2590C0] to-[#12B8DB] font-bold text-white font-mono h-14 sm:h-16 lg:h-20 px-6 sm:px-8 py-3 rounded-3xl flex items-center gap-2 sm:gap-3 hover:opacity-80 hover:bg-linear-to-r hover:from-[#c02525]  hover:to-[#12B8DB]  transition-colors cursor-pointer">
+                        <span class="w-10 h-10 sm:w-12 sm:h-12 bg-black rounded-full flex items-center justify-center">
+                            <img class="w-6 h-4 sm:w-8 sm:h-6" src="/assets/arrow.png" alt="" >
+                        </span>
+                        <span class="text-2xl sm:text-3xl lg:text-4xl">Shop Now</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- second part  -->
+
+<div class="bg-[url('/assets/secondhome.png')] bg-cover bg-center h-auto">
+    <div class="p-8 relative">
+        <button class="absolute top-6 right-8 bg-[#222222] text-white px-6 py-2 rounded-2xl font-semibold cursor-pointer hover:bg-gray-600 transition" [routerLink]="['/listblog']" >SEE MORE</button>
+        <div class="max-w-8xl mx-auto">
+            <!-- Title -->
+            <h1 class="text-white font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl  leading-tight mb-6 sm:mb-8 pr-20 sm:pr-0">What's happening?</h1>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Left Column - Main Featured Article -->
+                <div class="space-y-6">
+                    <!-- Main Image -->
+                    <div class="bg-black rounded-2xl overflow-hidden shadow-2xl">
+                      <img [src]="featuredBlog?.imageUrl" alt="ff" class="w-auto h-110 object-cover">
+                    </div>
+                    <!-- Article Title -->
+                     <div [routerLink]="['/blogdetail/',featuredBlog.id]" *ngIf="featuredBlog" class="bg-linear-to-r from-[#223033] to-[#0A0A0A] backdrop-blur-sm rounded-xl p-3 sm:p-3.5 hover:scale-105 transition-transform cursor-pointer">
+                      <h2 class="text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">{{featuredBlog.title}}</h2>
+                        <div class="flex items-center gap-3">
+                            <img src="/assets/logo.png" class="w-8 h-8 sm:w-10 sm:h-10" alt="f">
+                        <span class="text-orange-400 font-semibold text-sm sm:text-base uppercase">{{featuredBlog.type}}</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right Column-->
+                <div class="space-y-4">
+                    <!-- Card 1 -->
+                    <div *ngFor="let blog of sideBlogs" class="bg-linear-to-r from-[#223033] to-[#0A0A0A] rounded-xl sm:rounded-2xl p-4 sm:p-6 flex items-center gap-3 sm:gap-4 hover:scale-105 transition-transform cursor-pointer">
+                        <div [routerLink]="['/blogdetail/',blog.id]" class="flex-1 min-w-0">
+                            <h3 class="text-white font-bold text-base sm:text-lg lg:text-xl mb-1"></h3>
+                            <h3 class="text-white font-bold text-base sm:text-lg lg:text-xl mb-2 sm:mb-3">{{blog.title}}</h3>
+                            <div class="flex items-center gap-2 sm:gap-3">
+                                <img src="/assets/logo.png" class="w-7 h-7 sm:w-10 sm:h-10" alt="f">
+                                <span class="text-gray-400 font-semibold text-xs sm:text-sm lg:text-base">{{blog.type}}</span>
+                            </div>
+                        </div>
+                        <div class="w-20 h-16 sm:w-28 sm:h-20 lg:w-32 lg:h-24 bg-white rounded-lg overflow-hidden shrink-0">
+                            <img [src]="blog.imageUrl" alt="Team" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <!-- third part HAHAHAHHA  -->
+<div class="pt-20 pb-20 overflow-hidden relative" style="background: linear-gradient(to right, #0f3a40, #0A0A0A);">
+  
+  <!-- Decorative blobs -->
+  <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full opacity-10 bg-yellow-400"></div>
+  <div class="absolute bottom-6 left-10 w-10 h-10 rounded-full opacity-20 bg-green-500"></div>
+  <div class="absolute top-6 right-6 w-16 h-16 rounded-full opacity-10 bg-yellow-400"></div>
+
+  <!-- Title -->
+  <div class="px-6 sm:px-10 mb-10">
+    <div class="flex gap-1.5 mb-3">
+      <span class="w-6 h-1.5 rounded-full bg-yellow-400"></span>
+      <span class="w-3 h-1.5 rounded-full bg-red-500"></span>
+      <span class="w-2 h-1.5 rounded-full bg-green-400"></span>
+    </div>
+    <h1 class="text-white font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-tight">
+      We have it <span style="color:#fbcb09;">all</span>
+    </h1>
+  </div>
+
+  <!-- Scrolling cards -->
+  <div class="flex items-center animate-scroll -space-x-7">
+    <!-- First set -->
+    <div class="card-parallelogram relative w-[320px] h-150 transition-all duration-300 shadow-2xl hover:scale-105 hover:z-10">
+      <img src="/assets/food.jpg" alt="Food" class="w-full h-full object-cover">
+      <div class="absolute inset-0 opacity-60" style="background: linear-gradient(to bottom, #18a2cd88, transparent)"></div>
+      <div class="absolute top-0 left-0 right-0 flex h-1.5">
+        <span class="flex-1 bg-green-500"></span>
+      </div>
+      <div class="absolute top-5 left-10 text-white text-2xl font-black z-10 drop-shadow-lg">FOOD</div>
+    </div>
+
+    <div class="card-parallelogram relative w-[320px] h-150 transition-all duration-300 shadow-2xl hover:scale-105 hover:z-10">
+      <img src="/assets/house.jpg" alt="House" class="w-full h-full object-cover">
+      <div class="absolute inset-0 opacity-60" style="background: linear-gradient(to bottom, #ee1d2688, transparent)"></div>
+      <div class="absolute top-0 left-0 right-0 flex h-1.5">
+        <span class="flex-1 bg-red-500"></span>
+      </div>
+      <div class="absolute top-5 left-10 text-white text-2xl font-black z-10 drop-shadow-lg">HOUSE</div>
+    </div>
+
+    <div class="card-parallelogram relative w-[320px] h-150 transition-all duration-300 shadow-2xl hover:scale-105 hover:z-10">
+      <img src="/assets/elec.jpg" alt="Electronics" class="w-full h-full object-cover">
+      <div class="absolute inset-0 opacity-60" style="background: linear-gradient(to bottom, #fbcb0988, transparent)"></div>
+      <div class="absolute top-0 left-0 right-0 flex h-1.5">
+        <span class="flex-1 bg-yellow-400"></span>
+      </div>
+      <div class="absolute top-5 left-10 text-white text-2xl font-black z-10 drop-shadow-lg">ELECTRONICS</div>
+    </div>
+
+    <div class="card-parallelogram relative w-[320px] h-150 transition-all duration-300 shadow-2xl hover:scale-105 hover:z-10">
+      <img src="/assets/cloth.jpg" alt="Clothing" class="w-full h-full object-cover">
+      <div class="absolute inset-0 opacity-60" style="background: linear-gradient(to bottom, #92c74488, transparent)"></div>
+      <div class="absolute top-0 left-0 right-0 flex h-1.5">
+        <span class="flex-1" style="background:#18a2cd;"></span>
+      </div>
+      <div class="absolute top-5 left-10 text-white text-2xl font-black z-10 drop-shadow-lg">CLOTHING</div>
+    </div>
+
+    <div class="card-parallelogram relative w-[320px] h-150 transition-all duration-300 shadow-2xl hover:scale-105 hover:z-10">
+      <img src="/assets/makeup.jpg" alt="Makeup" class="w-full h-full object-cover">
+      <div class="absolute inset-0 opacity-60" style="background: linear-gradient(to bottom, #ea7d2188, transparent)"></div>
+      <div class="absolute top-0 left-0 right-0 flex h-1.5">
+        <span class="flex-1 bg-green-500"></span>
+      </div>
+      <div class="absolute top-5 left-10 text-white text-2xl font-black z-10 drop-shadow-lg">MAKEUP</div>
+    </div>
+
+    <!-- Duplicate for infinite loop -->
+    <div class="card-parallelogram relative w-[320px] h-150 transition-all duration-300 shadow-2xl hover:scale-105 hover:z-10">
+      <img src="/assets/food.jpg" alt="Food" class="w-full h-full object-cover">
+      <div class="absolute inset-0 opacity-60" style="background: linear-gradient(to bottom, #18a2cd88, transparent)"></div>
+      <div class="absolute top-0 left-0 right-0 flex h-1.5">
+        <span class="flex-1 bg-green-500"></span>
+      </div>
+      <div class="absolute top-5 left-10 text-white text-2xl font-black z-10 drop-shadow-lg">FOOD</div>
+    </div>
+
+    <div class="card-parallelogram relative w-[320px] h-150 transition-all duration-300 shadow-2xl hover:scale-105 hover:z-10">
+      <img src="/assets/house.jpg" alt="House" class="w-full h-full object-cover">
+      <div class="absolute inset-0 opacity-60" style="background: linear-gradient(to bottom, #ee1d2688, transparent)"></div>
+      <div class="absolute top-0 left-0 right-0 flex h-1.5">
+        <span class="flex-1 bg-red-500"></span>
+      </div>
+      <div class="absolute top-5 left-10 text-white text-2xl font-black z-10 drop-shadow-lg">HOUSE</div>
+    </div>
+
+    <div class="card-parallelogram relative w-[320px] h-150 transition-all duration-300 shadow-2xl hover:scale-105 hover:z-10">
+      <img src="/assets/elec.jpg" alt="Electronics" class="w-full h-full object-cover">
+      <div class="absolute inset-0 opacity-60" style="background: linear-gradient(to bottom, #fbcb0988, transparent)"></div>
+      <div class="absolute top-0 left-0 right-0 flex h-1.5">
+        <span class="flex-1 bg-yellow-400"></span>
+      </div>
+      <div class="absolute top-5 left-10 text-white text-2xl font-black z-10 drop-shadow-lg">ELECTRONICS</div>
+    </div>
+
+    <div class="card-parallelogram relative w-[320px] h-150 transition-all duration-300 shadow-2xl hover:scale-105 hover:z-10">
+      <img src="/assets/cloth.jpg" alt="Clothing" class="w-full h-full object-cover">
+      <div class="absolute inset-0 opacity-60" style="background: linear-gradient(to bottom, #92c74488, transparent)"></div>
+      <div class="absolute top-0 left-0 right-0 flex h-1.5">
+        <span class="flex-1" style="background:#18a2cd;"></span>
+      </div>
+      <div class="absolute top-5 left-10 text-white text-2xl font-black z-10 drop-shadow-lg">CLOTHING</div>
+    </div>
+
+    <div class="card-parallelogram relative w-[320px] h-150 transition-all duration-300 shadow-2xl hover:scale-105 hover:z-10">
+      <img src="/assets/makeup.jpg" alt="Makeup" class="w-full h-full object-cover">
+      <div class="absolute inset-0 opacity-60" style="background: linear-gradient(to bottom, #ea7d2188, transparent)"></div>
+      <div class="absolute top-0 left-0 right-0 flex h-1.5">
+        <span class="flex-1 bg-green-500"></span>
+      </div>
+      <div class="absolute top-5 left-10 text-white text-2xl font-black z-10 drop-shadow-lg">MAKEUP</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- section 4  -->
+  <div class="pt-10 pb-20 overflow-hidden relative bg-gray-50">
+    <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full opacity-10 bg-yellow-400"></div>
+    <div class="absolute bottom-6 left-10 w-10 h-10 rounded-full opacity-10 bg-red-500"></div>
+    <div class="absolute top-6 left-1/2 w-16 h-16 rounded-full opacity-10 bg-blue-400"></div>
+    <!-- ─── Recommended Products ─── -->
+    <div *ngIf="userID" class="px-6 sm:px-10 mb-6">
+      <div class="flex gap-1.5 mb-3">
+        <span class="w-6 h-1.5 rounded-full bg-yellow-400"></span>
+        <span class="w-3 h-1.5 rounded-full" style="background:#D70D0D"></span>
+        <span class="w-2 h-1.5 rounded-full" style="background:#0D8DD7"></span>
+      </div>
+      <h1 class="text-gray-900 font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-tight">
+        Recommended <span style="color:#0D8DD7;">for you</span>
+      </h1>
+    </div>
+
+    <div class="overflow-x-auto hide-scrollbar px-12" style="scroll-behavior: smooth;">
+      <div class="flex gap-6 w-max py-4">
+        <div *ngFor="let product of recommandation" class="card-parallelogram relative w-70 h-72 bg-white shadow-lg duration-300 hover:scale-105 hover:shadow-2xl hover:z-10 overflow-hidden group">
+          <a [routerLink]="['/product-detail/', product.id]">
+            <img [src]="product.image_url" [alt]="product.name" class="w-full h-full object-fill p-9" />
+            <div class="absolute top-0 left-0 right-0 h-1.5" style="background:#0D8DD7"></div>
+            <div class="absolute top-4 left-8 text-black text-sm font-black z-10 drop-shadow-lg tracking-widest uppercase">
+              {{ product.category_name }}
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 px-4 py-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-white border-t-2" style="border-color:#0D8DD7;">
+              <p class="text-gray-900 font-bold text-base truncate capitalize mb-1">{{ product.name }}</p>
+              <p class="font-bold text-lg" style="color:#0D8DD7;">{{ product.price }} DNT</p>
+              <p class="text-gray-400 text-xs truncate mt-1">{{ product.description }}</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Top 10 Best Discounts ─── -->
+    <div class="px-6 sm:px-10 mb-6">
+      <div class="flex gap-1.5 mb-3">
+        <span class="w-6 h-1.5 rounded-full" style="background:#D70D0D"></span>
+        <span class="w-3 h-1.5 rounded-full bg-yellow-400"></span>
+        <span class="w-2 h-1.5 rounded-full" style="background:#0D8DD7"></span>
+      </div>
+      <h2 class="text-gray-900 font-black text-2xl sm:text-3xl md:text-4xl leading-tight">Top 10 Best <span style="color:#D70D0D;">Discounts</span></h2>
+    </div>
+    <div class="overflow-x-auto hide-scrollbar px-12" style="scroll-behavior: smooth;">
+      <div class="flex gap-6 w-max py-4">
+        <div *ngFor="let product of topDiscountProducts" class="card-parallelogram relative w-70 h-72 bg-white shadow-lg duration-300 hover:scale-105 hover:shadow-2xl hover:z-10 overflow-hidden group">
+          <a [routerLink]="['/product-detail/', product.id]">
+            <img [src]="product.imageUrl" [alt]="product.name" class="w-full h-full  object-cover p-8" />
+            <!-- Red top bar -->
+            <div class="absolute top-0 left-0 right-0 h-1.5" style="background:#D70D0D"></div>
+            <!-- Discount badge -->
+            <div class="absolute top-3 right-4 z-10">
+              <span class="text-white font-black text-sm px-3 py-1 rounded-full shadow-lg" style="background:#D70D0D;">-{{ product.discount }}%</span>
+            </div>
+            <!-- Category -->
+            <div class="absolute top-4 left-8 text-black text-sm font-black z-10 drop-shadow-lg tracking-widest uppercase">{{ product.category?.name }}</div>
+            <!-- Hover info panel -->
+            <div class="absolute bottom-0 left-0 right-0 px-4 py-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-white border-t-2" style="border-color:#D70D0D;">
+              <p class="text-gray-900 font-bold text-base truncate capitalize mb-1">{{ product.name }}</p>
+              <div class="flex items-center gap-2">
+                <p class="font-bold text-lg" style="color:#D70D0D;">
+                  {{ (product.price - (product.price * product.discount / 100)).toFixed(2) }} DNT
+                </p>
+                <p class="text-gray-400 text-sm line-through">{{ product.price }} DNT</p>
+              </div>
+              <p class="text-gray-400 text-xs truncate mt-1">{{ product.description }}</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  
+    <!-- ─── Latest Items ─── -->
+    <div class="px-6 sm:px-10 mb-6">
+      <div class="flex gap-1.5 mb-3">
+        <span class="w-6 h-1.5 rounded-full" style="background:#0D8DD7"></span>
+        <span class="w-3 h-1.5 rounded-full bg-yellow-400"></span>
+        <span class="w-2 h-1.5 rounded-full" style="background:#D70D0D"></span>
+      </div>
+      <h2 class="text-gray-900 font-black text-2xl sm:text-3xl md:text-4xl leading-tight">Latest <span class="text-[#92c744]">Items</span></h2>
+    </div>
+
+    <div class="overflow-x-auto hide-scrollbar px-12" style="scroll-behavior: smooth;">
+      <div class="flex gap-6 w-max py-4">
+        <div *ngFor="let product of latestProducts" class="card-parallelogram relative w-70 h-72 bg-white shadow-lg duration-300 hover:scale-105 hover:shadow-2xl hover:z-10 overflow-hidden group">
+          <a [routerLink]="['/product-detail/', product.id]">
+            <img [src]="product.imageUrl" [alt]="product.name" class="w-full h-full object-cover p-8" />
+            <div class="absolute top-0 left-0 right-0 h-1.5" style="background:#92c744"></div>
+            <div class="absolute top-3 right-4 z-10">
+              <span class="text-white font-black text-xs px-3 py-1 rounded-full shadow-lg" style="background:#92c744;">NEW</span>
+            </div>
+            <div class="absolute top-4 left-8 text-black text-sm font-black z-10 drop-shadow-lg tracking-widest uppercase">
+              {{ product.category?.name }}
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 px-4 py-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-white border-t-2" style="border-color:#92c744;">
+              <p class="text-gray-900 font-bold text-base truncate capitalize mb-1">{{ product.name }}</p>
+              <p class="font-bold text-lg" style="color:#92c744;">{{ product.price }} DNT</p>
+              <p class="text-gray-400 text-xs truncate mt-1">{{ product.description }}</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<!-- fifth part -->
+<div class="w-full flex overflow-hidden">
+  <div class="flex-1 bg-white px-20 flex flex-col justify-center gap-5">
+    <h1 class="font-mono font-bold text-7xl text-gray-900">We're hiring!</h1>
+    <p class="font-mono text-gray-400 text-base leading-relaxed">
+      Team up with MG to make a better future for all of us
+    </p>
+    <div class="flex gap-4 px-10">
+      <div class="flex flex-col items-center justify-center bg-gray-200 rounded-2xl px-8 py-2">
+        <span class="font-mono font-bold text-3xl text-gray-900">
+          <ng-container *ngIf="!statsLoading; else skeleton">{{ openPositions }}</ng-container>
+        </span>
+        <span class="font-mono text-gray-400 text-base">Open positions</span>
+      </div>
+      <div class="flex flex-col items-center justify-center bg-gray-200 rounded-2xl px-8 py-2">
+        <span class="font-mono font-bold text-3xl text-gray-900">
+          <ng-container *ngIf="!statsLoading; else skeleton">{{ peopleApplied }}</ng-container>
+        </span>
+        <span class="font-mono text-gray-400 text-base">People applied</span>
+      </div>
+    </div>
+    <div class="px-30">
+      <button [routerLink]="['/recrutement']" class="bg-red-600 hover:bg-red-500 transition-colors text-white font-mono font-bold text-base px-10 py-4 rounded-2xl cursor-pointer">
+        Explore Careers
+      </button>
+    </div>
+  </div>
+  <!-- Right: Image -->
+  <div class="w-200 h-150 card-hiring">
+    <img src="https://placeholdmon.vercel.app" alt="Hiring visual" class="w-full h-full object-cover">
+  </div>
+</div>
+<ng-template #skeleton>
+  <span class="inline-block w-12 h-8 bg-gray-300 rounded animate-pulse"></span>
+</ng-template>
+<app-footer></app-footer>

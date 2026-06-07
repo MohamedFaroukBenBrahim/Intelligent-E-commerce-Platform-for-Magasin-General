@@ -1,0 +1,3 @@
+<router-outlet></router-outlet>
+<app-chatbot *ngIf="showChatbot"></app-chatbot>
+<app-avatar *ngIf="showAvatar" (closed)="hideAvatar()"></app-avatar>

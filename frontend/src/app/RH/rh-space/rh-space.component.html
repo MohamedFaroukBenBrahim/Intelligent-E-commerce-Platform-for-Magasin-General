@@ -1,0 +1,175 @@
+<app-rh-navbar></app-rh-navbar>
+
+<main class="min-h-screen bg-slate-50">
+	<section class="relative overflow-hidden bg-linear-to-br from-teal-600 to-teal-800 px-6 py-10 sm:py-12">
+		<div class="absolute -right-20 -top-16 h-64 w-64 rounded-full bg-white/10"></div>
+		<div class="absolute right-24 bottom-0 h-28 w-28 rounded-full bg-white/10"></div>
+
+		<div class="relative mx-auto grid max-w-6xl grid-cols-1 gap-6 lg:grid-cols-3 lg:items-end">
+			<div class="lg:col-span-2">
+				<p class="text-xs font-semibold uppercase tracking-[0.3em] text-teal-100/80">RH Space</p>
+				<h1 class="mt-3 text-3xl font-black text-white sm:text-4xl">Recruitment dashboard for the RH team</h1>
+				<p class="mt-4 max-w-2xl text-sm leading-6 text-teal-50/90 sm:text-base">
+					Monitor offers, applications, and hiring status from one place.
+				</p>
+			</div>
+
+			<div class="rounded-2xl border border-white/15 bg-white/10 p-5 text-white backdrop-blur">
+				<div class="flex items-center gap-3">
+					<div class="flex h-12 w-12 items-center justify-center rounded-full bg-white/15 text-sm font-black">
+						{{ getInitials() }}
+					</div>
+					<div>
+						<p class="text-sm font-semibold">{{ me.username || 'HR' }}</p>
+						<p class="text-xs text-teal-100/80">{{ me.role || 'RH member' }}</p>
+					</div>
+				</div>
+				<div class="mt-4 flex flex-wrap gap-2">
+					<a [routerLink]="['/RH-applications']" class="rounded-full bg-white px-4 py-2 text-xs font-bold text-teal-700 transition hover:bg-slate-100">All applications</a>
+					<a [routerLink]="['/RH-jobs']" class="rounded-full border border-white/25 px-4 py-2 text-xs font-bold text-white transition hover:bg-white/10">Jobs</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="relative z-10 mx-auto max-w-6xl px-6 pb-12 mt-8">
+		<div *ngIf="loading" class="rounded-2xl border border-slate-100 bg-white p-8 text-center text-slate-500 shadow-sm">
+			Loading RH dashboard...
+		</div>
+
+		<div *ngIf="!loading && errorMessage" class="mb-6 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+			{{ errorMessage }}
+		</div>
+
+		<div *ngIf="!loading" class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+			<div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+				<p class="text-xs font-semibold uppercase tracking-widest text-slate-400">Total offers</p>
+				<p class="mt-2 text-3xl font-black text-slate-900">{{ stats.totalOffers }}</p>
+				<p class="mt-1 text-xs text-slate-500">{{ stats.activeOffers }} active, {{ stats.closedOffers }} closed</p>
+			</div>
+
+			<div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+				<p class="text-xs font-semibold uppercase tracking-widest text-slate-400">Total applications</p>
+				<p class="mt-2 text-3xl font-black text-slate-900">{{ stats.totalApplications }}</p>
+				<p class="mt-1 text-xs text-slate-500">Across all jobs</p>
+			</div>
+
+			<div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+				<p class="text-xs font-semibold uppercase tracking-widest text-slate-400">Acceptance rate</p>
+				<p class="mt-2 text-3xl font-black text-slate-900">{{ stats.acceptanceRate }}%</p>
+				<p class="mt-1 text-xs text-slate-500">{{ stats.acceptedApplications }} accepted applications</p>
+			</div>
+
+			<div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+				<p class="text-xs font-semibold uppercase tracking-widest text-slate-400">Pending / rejected</p>
+				<p class="mt-2 text-3xl font-black text-slate-900">{{ stats.pendingApplications }} / {{ stats.rejectedApplications }}</p>
+				<p class="mt-1 text-xs text-slate-500">Current application flow</p>
+			</div>
+		</div>
+
+		<div *ngIf="!loading" class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+			<article class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm lg:col-span-2">
+				<div class="flex items-center justify-between gap-4">
+					<div>
+						<p class="text-xs font-semibold uppercase tracking-widest text-teal-600">Breakdown</p>
+						<h2 class="mt-1 text-lg font-black text-slate-900">Application status overview</h2>
+					</div>
+					<a [routerLink]="['/RH-applications']" class="text-sm font-semibold text-teal-600 hover:text-teal-800">View all applications</a>
+				</div>
+
+				<div class="mt-6 space-y-4">
+					<div>
+						<div class="mb-1 flex items-center justify-between text-sm">
+							<span class="font-semibold text-slate-700">Accepted</span>
+							<span class="text-slate-500">{{ stats.acceptedApplications }} ({{ getPercent(stats.acceptedApplications, stats.totalApplications) }}%)</span>
+						</div>
+						<div class="h-3 overflow-hidden rounded-full bg-slate-100">
+							<div class="h-full rounded-full bg-emerald-500" [style.width.%]="getPercent(stats.acceptedApplications, stats.totalApplications)"></div>
+						</div>
+					</div>
+
+					<div>
+						<div class="mb-1 flex items-center justify-between text-sm">
+							<span class="font-semibold text-slate-700">Pending</span>
+							<span class="text-slate-500">{{ stats.pendingApplications }} ({{ getPercent(stats.pendingApplications, stats.totalApplications) }}%)</span>
+						</div>
+						<div class="h-3 overflow-hidden rounded-full bg-slate-100">
+							<div class="h-full rounded-full bg-amber-500" [style.width.%]="getPercent(stats.pendingApplications, stats.totalApplications)"></div>
+						</div>
+					</div>
+
+					<div>
+						<div class="mb-1 flex items-center justify-between text-sm">
+							<span class="font-semibold text-slate-700">Rejected</span>
+							<span class="text-slate-500">{{ stats.rejectedApplications }} ({{ getPercent(stats.rejectedApplications, stats.totalApplications) }}%)</span>
+						</div>
+						<div class="h-3 overflow-hidden rounded-full bg-slate-100">
+							<div class="h-full rounded-full bg-rose-500" [style.width.%]="getPercent(stats.rejectedApplications, stats.totalApplications)"></div>
+						</div>
+					</div>
+				</div>
+			</article>
+
+			<article class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+				<div class="flex items-center justify-between gap-4">
+					<div>
+						<p class="text-xs font-semibold uppercase tracking-widest text-teal-600">Offers</p>
+						<h2 class="mt-1 text-lg font-black text-slate-900">Recent job offers</h2>
+					</div>
+					<a [routerLink]="['/RH-jobs']" class="text-sm font-semibold text-teal-600 hover:text-teal-800">Open</a>
+				</div>
+
+				<div class="mt-5 space-y-4">
+					<div *ngFor="let offer of recentOffers" class="rounded-xl border border-slate-100 bg-slate-50 p-4">
+						<div class="flex items-start justify-between gap-3">
+							<div>
+								<p class="font-semibold text-slate-800">{{ offer.title }}</p>
+								<p class="text-xs text-slate-500">{{ offer.contractType }} · {{ offer.location }}</p>
+							</div>
+							<span class="rounded-full px-2.5 py-1 text-[11px] font-bold uppercase" [ngClass]="offer.active ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-200 text-slate-600'">
+								{{ offer.active ? 'Active' : 'Closed' }}
+							</span>
+						</div>
+						<p class="mt-3 text-xs text-slate-500">{{ offer.applicationCount }} application(s)</p>
+					</div>
+
+					<div *ngIf="recentOffers.length === 0" class="rounded-xl border border-dashed border-slate-200 p-6 text-center text-sm text-slate-400">
+						No offers available yet.
+					</div>
+				</div>
+			</article>
+		</div>
+
+		<div *ngIf="!loading" class="mt-6 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+			<div class="flex items-center justify-between gap-4">
+				<div>
+					<p class="text-xs font-semibold uppercase tracking-widest text-teal-600">Activity</p>
+					<h2 class="mt-1 text-lg font-black text-slate-900">Most recent applications</h2>
+				</div>
+				<a [routerLink]="['/RH-applications']" class="text-sm font-semibold text-teal-600 hover:text-teal-800">All applications</a>
+			</div>
+
+			<div class="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-2">
+				<div *ngFor="let app of recentApplications" class="rounded-xl border border-slate-100 bg-slate-50 p-4">
+					<div class="flex items-start justify-between gap-3">
+						<div class="min-w-0">
+							<p class="font-semibold text-slate-800">{{ app.applicantUsername }}</p>
+							<p class="text-xs text-slate-500">{{ app.applicantEmail }}</p>
+							<p class="mt-2 text-sm font-medium text-slate-700">{{ app.jobTitle }}</p>
+						</div>
+						<span class="rounded-full px-2.5 py-1 text-[11px] font-bold uppercase" [ngClass]="{
+							'bg-amber-50 text-amber-700': app.status === 'PENDING',
+							'bg-emerald-50 text-emerald-700': app.status === 'ACCEPTED',
+							'bg-rose-50 text-rose-700': app.status === 'REJECTED'
+						}">{{ getStatusLabel(app.status) }}</span>
+					</div>
+					<p class="mt-3 text-xs text-slate-500">Applied {{ getTimeAgo(app.appliedAt) }}</p>
+				</div>
+
+				<div *ngIf="recentApplications.length === 0" class="rounded-xl border border-dashed border-slate-200 p-6 text-center text-sm text-slate-400 lg:col-span-2">
+					No applications found yet.
+				</div>
+			</div>
+		</div>
+	</section>
+</main>

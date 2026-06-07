@@ -1,0 +1,95 @@
+<app-admin-sidebar></app-admin-sidebar>
+
+<div class="ml-14 md:ml-64 p-6 bg-gray-100 min-h-screen">
+  <div class="w-full container xl:w-10/12 mx-auto">
+    <div class="max-w-2xl p-6 mx-auto bg-white rounded-md shadow-md">
+      
+      <a class="text-blue-600 hover:text-blue-800 font-medium mb-4 inline-block" [routerLink]="['/admin-products']">
+        ← Back to Products
+      </a>
+      
+      <h2 class="text-lg font-semibold text-gray-700 mb-1">Adjust Stock</h2>
+      <p class="text-sm text-gray-400 mb-6">{{ product.name }}</p>
+
+      <!-- Product info card -->
+      <div class="bg-gray-50 rounded-lg p-4 mb-6 flex items-center gap-4 border border-gray-200">
+        <img *ngIf="product.imageUrl" [src]="product.imageUrl" alt="Product"
+          class="w-16 h-16 rounded-lg object-cover border border-gray-200 shrink-0">
+        <div>
+          <p class="font-semibold text-gray-800">{{ product.name }}</p>
+          <p class="text-sm text-gray-500">Current stock:
+            <span class="font-bold" [ngClass]="product.quantity <= 5 ? 'text-red-500' : 'text-green-600'">
+              {{ product.quantity }} units
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <form (ngSubmit)="adjustStock()">
+        <div class="grid grid-cols-1 gap-5">
+
+          <div>
+            <label class="text-gray-700 text-sm font-medium" for="adjustment">Adjustment</label>
+            <input [(ngModel)]="adjustment" name="adjustment" id="adjustment" type="number"
+              placeholder="e.g. +10 to add, -5 to remove"
+              class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring">
+            <p class="text-xs text-gray-400 mt-1">Use negative numbers to decrease stock</p>
+          </div>
+
+          <!-- Live preview -->
+          <div *ngIf="adjustment !== 0" class="flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-sm">
+            <svg class="w-4 h-4 text-blue-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20A10 10 0 0012 2z"/>
+            </svg>
+            <span class="text-blue-700">
+              Stock will change from
+              <span class="font-bold">{{ product.quantity }}</span> →
+              <span class="font-bold" [ngClass]="(product.quantity + adjustment) < 0 ? 'text-red-500' : 'text-blue-700'">
+                {{ product.quantity + adjustment }}
+              </span>
+              <span *ngIf="(product.quantity + adjustment) < 0" class="text-red-500 ml-1">(cannot go below 0)</span>
+            </span>
+          </div>
+
+          <div>
+            <label class="text-gray-700 text-sm font-medium" for="reason">Reason</label>
+            <input [(ngModel)]="reason" name="reason" id="reason" type="text"
+              placeholder="e.g. restock, damage, inventory correction"
+              class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring">
+          </div>
+
+          <!-- Success alert -->
+          <div *ngIf="showSuccess" class="flex items-center gap-3 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            Stock updated successfully!
+          </div>
+
+          <!-- Error alert -->
+          <div *ngIf="errorMsg" class="flex items-center gap-3 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+            {{ errorMsg }}
+          </div>
+
+        </div>
+
+        <div class="flex justify-end gap-3 mt-6">
+          <button type="button" [routerLink]="['/admin-products']"
+            class="px-6 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition focus:outline-none">
+            Cancel
+          </button>
+          <button type="submit"
+            [disabled]="adjustment === 0 || !reason || (product.quantity + adjustment) < 0"
+            class="px-6 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">
+            Apply Adjustment
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

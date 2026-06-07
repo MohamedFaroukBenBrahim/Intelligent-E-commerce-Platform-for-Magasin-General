@@ -1,0 +1,196 @@
+<app-rh-navbar></app-rh-navbar>
+
+<main class="min-h-screen bg-slate-50">
+	<section class="relative overflow-hidden bg-linear-to-br from-teal-600 to-teal-800 px-6 py-10 sm:py-12">
+		<div class="absolute -right-20 -top-16 h-64 w-64 rounded-full bg-white/10"></div>
+		<div class="absolute right-24 bottom-0 h-28 w-28 rounded-full bg-white/10"></div>
+
+		<div class="relative mx-auto max-w-6xl">
+			<p class="text-xs font-semibold uppercase tracking-[0.3em] text-teal-100/80">RH Applications</p>
+			<div class="mt-3 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+				<div>
+					<h1 class="text-3xl font-black text-white sm:text-4xl">All applications</h1>
+					<p class="mt-3 max-w-2xl text-sm leading-6 text-teal-50/90 sm:text-base">
+						Review every application with pagination, status filtering, job filtering, and candidate actions.
+					</p>
+				</div>
+
+				<div class="rounded-2xl border border-white/15 bg-white/10 px-5 py-4 text-white backdrop-blur">
+					<p class="text-xs uppercase tracking-widest text-teal-100/80">Showing</p>
+					<p class="mt-1 text-2xl font-black">{{ pageStart }}-{{ pageEnd }}</p>
+					<p class="text-xs text-teal-100/80">of {{ totalElements }} application(s)</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="relative z-10 mx-auto max-w-6xl px-6 pb-12 mt-8">
+		<div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+			<div class="grid grid-cols-1 gap-4 lg:grid-cols-4">
+				<div>
+					<label class="mb-2 block text-xs font-semibold uppercase tracking-widest text-slate-400">Search</label>
+					<input
+						[(ngModel)]="searchText"
+						(ngModelChange)="applyFilters()"
+						type="search"
+						placeholder="Candidate, email, or job title"
+						class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-teal-400 focus:bg-white">
+				</div>
+
+				<div>
+					<label class="mb-2 block text-xs font-semibold uppercase tracking-widest text-slate-400">Status</label>
+					<select
+						[(ngModel)]="selectedStatus"
+						(ngModelChange)="applyFilters()"
+						class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-teal-400 focus:bg-white">
+						<option value="ALL">All statuses</option>
+						<option value="PENDING">Pending</option>
+						<option value="ACCEPTED">Accepted</option>
+						<option value="REJECTED">Rejected</option>
+					</select>
+				</div>
+
+				<div>
+					<label class="mb-2 block text-xs font-semibold uppercase tracking-widest text-slate-400">Job</label>
+					<select
+						[(ngModel)]="selectedJobId"
+						(ngModelChange)="applyFilters()"
+						class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-teal-400 focus:bg-white">
+						<option value="ALL">All jobs</option>
+						<option *ngFor="let offer of offers" [value]="offer.id">{{ offer.title }}</option>
+					</select>
+				</div>
+
+				<div class="flex items-end gap-3">
+					<button type="button" (click)="clearFilters()" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-600 transition hover:border-teal-200 hover:text-teal-700">
+						Clear filters
+					</button>
+				</div>
+			</div>
+
+			<div class="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
+				<span>Active filters: <span class="font-semibold text-slate-700">{{ filteredLabel }}</span></span>
+				<a [routerLink]="['/RH-space']" class="font-semibold text-teal-600 hover:text-teal-800">Open RH space</a>
+			</div>
+		</div>
+
+		<div *ngIf="loading" class="mt-6 rounded-2xl border border-slate-100 bg-white p-8 text-center text-slate-500 shadow-sm">
+			Loading applications...
+		</div>
+
+		<div *ngIf="!loading && errorMessage" class="mt-6 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+			{{ errorMessage }}
+		</div>
+
+		<div *ngIf="!loading && !errorMessage" class="mt-6 space-y-4">
+			<article *ngFor="let app of applications" class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition hover:shadow-md">
+				<div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+					<div class="min-w-0 flex-1">
+						<div class="flex flex-wrap items-center gap-3">
+							  <div class="flex h-11 w-11 items-center justify-center rounded-full bg-linear-to-br from-teal-600 to-teal-800 text-sm font-black text-white">
+								{{ app.applicantUsername?.charAt(0)?.toUpperCase() || 'C' }}
+							</div>
+							<div class="min-w-0">
+								<h2 class="truncate text-base font-black text-slate-900">{{ app.applicantUsername }}</h2>
+								<p class="truncate text-sm text-slate-500">{{ app.applicantEmail }}</p>
+							</div>
+							<span class="rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-wide" [ngClass]="getStatusClass(app.status)">
+								{{ app.status }}
+							</span>
+						</div>
+
+						<div class="mt-4 grid gap-3 sm:grid-cols-3">
+							<div>
+								<p class="text-xs uppercase tracking-widest text-slate-400">Job</p>
+								<p class="mt-1 text-sm font-semibold text-slate-800">{{ app.jobTitle }}</p>
+							</div>
+							<div>
+								<p class="text-xs uppercase tracking-widest text-slate-400">Offer</p>
+								<p class="mt-1 text-sm font-semibold text-slate-800">{{ getOfferTitle(app.jobOfferId) }}</p>
+							</div>
+							<div>
+								<p class="text-xs uppercase tracking-widest text-slate-400">Applied</p>
+								<p class="mt-1 text-sm font-semibold text-slate-800">{{ app.appliedAt | date:'MMM d, y' }}</p>
+							</div>
+						</div>
+
+						<p *ngIf="app.coverLetter" class="mt-4 rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-600">
+							{{ app.coverLetter }}
+						</p>
+					</div>
+
+					<div class="flex flex-wrap gap-2 lg:justify-end">
+						<button
+							type="button"
+							(click)="downloadCv(app.id)"
+							[disabled]="downloadingCvFor === app.id"
+							class="rounded-xl border border-teal-100 bg-teal-50 px-4 py-2 text-xs font-bold text-teal-700 transition hover:border-teal-200 hover:bg-teal-100 disabled:cursor-not-allowed disabled:opacity-60">
+							{{ downloadingCvFor === app.id ? 'Downloading...' : 'CV' }}
+						</button>
+
+						<button
+							*ngIf="app.status !== 'ACCEPTED'"
+							type="button"
+							(click)="updateStatus(app.id, 'ACCEPTED')"
+							class="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-2 text-xs font-bold text-emerald-700 transition hover:border-emerald-200 hover:bg-emerald-100">
+							Accept
+						</button>
+
+						<button
+							*ngIf="app.status !== 'REJECTED'"
+							type="button"
+							(click)="updateStatus(app.id, 'REJECTED')"
+							class="rounded-xl border border-rose-100 bg-rose-50 px-4 py-2 text-xs font-bold text-rose-700 transition hover:border-rose-200 hover:bg-rose-100">
+							Reject
+						</button>
+
+						<button
+							*ngIf="app.status !== 'PENDING'"
+							type="button"
+							(click)="updateStatus(app.id, 'PENDING')"
+							class="rounded-xl border border-amber-100 bg-amber-50 px-4 py-2 text-xs font-bold text-amber-700 transition hover:border-amber-200 hover:bg-amber-100">
+							Pending
+						</button>
+					</div>
+				</div>
+			</article>
+
+			<div *ngIf="applications.length === 0" class="rounded-2xl border border-dashed border-slate-200 bg-white p-10 text-center text-slate-400 shadow-sm">
+				No applications match the current filters.
+			</div>
+		</div>
+
+		<div *ngIf="!loading && totalPages > 1" class="mt-6 flex flex-col items-center justify-between gap-4 rounded-2xl border border-slate-100 bg-white px-5 py-4 shadow-sm sm:flex-row">
+			<p class="text-sm text-slate-500">
+				Page {{ page + 1 }} of {{ totalPages }}
+			</p>
+
+			<div class="flex flex-wrap items-center gap-2">
+				<button
+					type="button"
+					(click)="goToPage(page - 1)"
+					[disabled]="page === 0"
+					class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-teal-200 hover:text-teal-700 disabled:cursor-not-allowed disabled:opacity-50">
+					Prev
+				</button>
+
+				<button
+					*ngFor="let pageNumber of pageNumbers"
+					type="button"
+					(click)="goToPage(pageNumber)"
+					class="rounded-xl border px-4 py-2 text-sm font-semibold transition"
+					[ngClass]="pageNumber === page ? 'border-teal-600 bg-teal-600 text-white' : 'border-slate-200 text-slate-600 hover:border-teal-200 hover:text-teal-700'">
+					{{ pageNumber + 1 }}
+				</button>
+
+				<button
+					type="button"
+					(click)="goToPage(page + 1)"
+					[disabled]="page >= totalPages - 1"
+					class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-teal-200 hover:text-teal-700 disabled:cursor-not-allowed disabled:opacity-50">
+					Next
+				</button>
+			</div>
+		</div>
+	</section>
+</main>

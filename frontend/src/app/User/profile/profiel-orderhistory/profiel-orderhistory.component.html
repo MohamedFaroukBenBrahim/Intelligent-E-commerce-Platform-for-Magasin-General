@@ -1,0 +1,107 @@
+<app-nav-bar></app-nav-bar>
+<div class="min-h-screen bg-slate-50 font-sans">
+  <div class="max-w-7xl mx-auto px-4 py-10 flex flex-col lg:flex-row gap-8">
+    <app-profile-sidebar></app-profile-sidebar>
+    <main class="flex-1 min-w-0">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+
+
+        <div class="relative px-8 pt-8 pb-6 border-b border-slate-100 overflow-hidden">
+          <div class="absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-10 bg-yellow-400"></div>
+          <div class="flex gap-1.5 mb-3">
+            <span class="w-5 h-1 rounded-full bg-yellow-400"></span>
+            <span class="w-3 h-1 rounded-full bg-red-500"></span>
+            <span class="w-2 h-1 rounded-full bg-green-400"></span>
+          </div>
+          <h3 class="text-xl font-black text-slate-800 mb-1">Order History</h3>
+          <p class="text-slate-400 text-sm">All your past orders in one place</p>
+        </div>
+
+        <div class="p-8">
+          <div *ngIf="loading" class="flex justify-center py-12">
+            <div class="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin" style="border-color:#18a2cd; border-top-color:transparent;"></div>
+          </div>
+
+          <div *ngIf="!loading && orders.length === 0" class="text-center py-12 text-slate-400">
+            <svg class="w-12 h-12 mx-auto mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+            </svg>
+            <p class="font-medium">No orders yet</p>
+          </div>
+
+          <div *ngIf="!loading" class="space-y-4">
+            <div *ngFor="let order of orders" class="border border-slate-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+
+
+              <button (click)="toggleOrder(order.id)" class="w-full flex items-center justify-between px-5 py-4 bg-slate-50 hover:bg-slate-100 transition-colors duration-150">
+                <div class="flex items-center gap-4">
+                  <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:#e8f7fc;">
+                    <svg class="w-5 h-5" style="color:#18a2cd;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                    </svg>
+                  </div>
+                  <div class="text-left">
+                    <p class="text-sm font-bold text-slate-800">Order #{{ order.id }}</p>
+                    <p class="text-xs text-slate-400 mt-0.5">{{ order.createdAt | date:'MMM d, y' }}</p>
+                  </div>
+                  <span [ngClass]="{
+                    'bg-blue-100 text-blue-700': order.status === 'PENDING',
+                    'bg-purple-100 text-purple-700': order.status === 'CONFIRMED',
+                    'bg-yellow-100 text-yellow-700': order.status === 'SHIPPED',
+                    'bg-green-100 text-green-700': order.status === 'DELIVERED',
+                    'bg-red-100 text-red-700': order.status === 'CANCELLED'
+                  }" class="text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wide">
+                    {{ order.status }}
+                  </span>
+                  <button (click)="cancelorder(order.id,'CANCELLED')" 
+                    class="cursor-pointer group relative inline-flex items-center gap-2 px-6 py-2 rounded-2xl bg-red-50 border-2 border-red-400 text-red-600 font-bold text-sm tracking-wide overflow-hidden transition-all duration-300 hover:bg-red-600 hover:text-white hover:border-red-600 hover:shadow-lg hover:shadow-red-200 hover:-translate-y-0.5 active:scale-95">
+                    
+                    <!-- background sweep on hover -->
+                    <span class="absolute inset-0 bg-red-600 translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out rounded-2xl"></span>
+                    <!-- trash icon -->
+                    <svg class="relative z-10 w-4 h-4 transition-transform duration-300 group-hover:rotate-12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                    <span class="relative z-10">Cancel Order</span>
+                  </button>
+                                  
+                </div>
+                <div class="flex items-center gap-4">
+                  <p class="text-sm font-black text-slate-800">DNT {{ order.totalAmount | number:'1.2-2' }}</p>
+                  <svg [ngClass]="{'rotate-180': expandedOrders[order.id]}"
+                    class="w-5 h-5 text-slate-400 transition-transform duration-200"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </div>
+              </button>
+
+              <div *ngIf="expandedOrders[order.id]" class="divide-y divide-slate-50">
+                <div *ngFor="let item of order.items" class="flex items-center gap-4 px-5 py-4">
+                  <div class="w-14 h-14 rounded-xl border border-slate-100 shrink-0 overflow-hidden bg-slate-50">
+                    <img *ngIf="item.product?.imageUrl" [src]="item.product.imageUrl" [alt]="item.product.name" class="w-full h-full object-cover"/>
+                    <div *ngIf="!item.product?.imageUrl" class="w-full h-full flex items-center justify-center">
+                      <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold text-slate-800 truncate">{{ item.product?.name }}</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Qty: {{ item.quantity }}</p>
+                  </div>
+                  <p class="text-sm font-bold text-slate-700">DNT{{ item.price | number:'1.2-2' }}</p>
+                </div>
+                <div class="flex justify-between items-center px-5 py-3 bg-slate-50">
+                  <p class="text-xs text-slate-400">{{ order.items?.length }} item(s)</p>
+                  <p class="text-sm text-slate-500">Total: <span class="font-black text-slate-800">DNT{{ order.totalAmount | number:'1.2-2' }}</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<app-footer></app-footer>

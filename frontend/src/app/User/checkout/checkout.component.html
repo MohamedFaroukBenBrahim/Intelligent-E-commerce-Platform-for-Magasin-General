@@ -1,0 +1,122 @@
+<app-nav-bar></app-nav-bar>
+
+<main class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 items-start">
+  <!-- LEFT -->
+  <div>
+    <p class="text-accent text-xs font-medium tracking-widest uppercase mb-2">Almost there</p>
+    <h1 class="font-serif text-4xl font-normal mb-1">Checkout</h1>
+    <p class="text-muted text-sm mb-8">Complete your order below</p>
+    <!-- Error message -->
+    <div *ngIf="errorMessage" class="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded mb-4">
+        {{ errorMessage }}
+    </div>  
+    <!-- SHIPPING FORM -->
+    <form #checkoutForm="ngForm" (ngSubmit)="placeOrder(checkoutForm)">
+      <div class="bg-white border border-border rounded p-6 mb-4 animate-fadeUp delay-1">
+        <h2 class="font-serif text-lg font-normal mb-4 pb-3 border-b border-accent-light">Shipping Address</h2>
+        <div class="mb-4">
+          <label class="block text-xs font-medium tracking-widest uppercase text-muted mb-1" for="address">Street Address</label>
+          <input class="w-full border border-border rounded-sm px-3 py-2.5 text-sm bg-cream text-ink transition-colors" [(ngModel)]="Street" type="text" name="Street" id="address" placeholder="123 Example Street" required>
+        </div>
+        <div class="mb-4">
+          <label class="block text-xs font-medium tracking-widest uppercase text-muted mb-1" for="apt">Apartment, suite, etc. (optional)</label>
+          <input class="w-full border border-border rounded-sm px-3 py-2.5 text-sm bg-cream text-ink transition-colors" [(ngModel)]="Apertment" type="text" name="Apartment" id="apt" placeholder="Apt 4B">
+        </div>
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-xs font-medium tracking-widest uppercase text-muted mb-1" for="city">City</label>
+            <input class="w-full border border-border rounded-sm px-3 py-2.5 text-sm bg-cream text-ink transition-colors" [(ngModel)]="City" type="text" name="city" id="city" placeholder="beni khiar" required>
+          </div>
+          <div>
+            <label class="block text-xs font-medium tracking-widest uppercase text-muted mb-1" for="state">State</label>
+            <input class="w-full border border-border rounded-sm px-3 py-2.5 text-sm bg-cream text-ink transition-colors" [(ngModel)]="State" type="text" name="state" id="state" placeholder="nabeul" required>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium tracking-widest uppercase text-muted mb-1" for="zip">Postal Code</label>
+            <input class="w-full border border-border rounded-sm px-3 py-2.5 text-sm bg-cream text-ink transition-colors" [(ngModel)]="Postal" type="text" name="Postal" id="zip" placeholder="10001" required>
+          </div>
+        </div>
+      </div>
+            <!-- Payment Info Section — add this inside the <form> after the address div -->
+      <div class="bg-white border border-border rounded p-6 mb-4">
+        <h2 class="font-serif text-lg font-normal mb-4 pb-3 border-b border-accent-light">
+          Payment Info
+        </h2>
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-xs font-medium tracking-widest uppercase text-muted mb-1">First Name</label>
+            <input
+              class="w-full border border-border rounded-sm px-3 py-2.5 text-sm bg-cream text-ink"
+              [(ngModel)]="firstName" name="firstName" type="text"
+              placeholder="Mohamed" required />
+          </div>
+          <div>
+            <label class="block text-xs font-medium tracking-widest uppercase text-muted mb-1">Last Name</label>
+            <input
+              class="w-full border border-border rounded-sm px-3 py-2.5 text-sm bg-cream text-ink"
+              [(ngModel)]="lastName" name="lastName" type="text"
+              placeholder="Ben Ali" required />
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="block text-xs font-medium tracking-widest uppercase text-muted mb-1">Email</label>
+          <input
+            class="w-full border border-border rounded-sm px-3 py-2.5 text-sm bg-cream text-ink"
+            [(ngModel)]="email" name="email" type="email"
+            placeholder="you@example.com" required />
+        </div>
+        <div>
+          <label class="block text-xs font-medium tracking-widest uppercase text-muted mb-1">Phone Number</label>
+          <input
+            class="w-full border border-border rounded-sm px-3 py-2.5 text-sm bg-cream text-ink"
+            [(ngModel)]="phoneNumber" name="phoneNumber" type="tel"
+            placeholder="+21612345678" required />
+        </div>
+      </div>
+
+      <!-- RIGHT: ORDER SUMMARY (button is inside the form so it triggers ngSubmit) -->
+    
+      <div class="lg:hidden">
+        <button type="submit" [disabled]="checkoutForm.invalid || isLoading"
+          class="cursor-pointer w-full text-white text-sm font-medium tracking-widest uppercase py-3.5 rounded-sm mt-5 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          style="background:#D70D0D;">
+          <svg *ngIf="isLoading" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+          </svg>
+          {{ isLoading ? 'Processing...' : 'Pay with Konnect' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- RIGHT: ORDER SUMMARY -->
+  <div class="lg:sticky lg:top-8">
+    <div class="bg-white border border-border rounded p-6">
+      <h2 class="font-serif text-xl font-normal mb-4 pb-4 border-b border-border">Order Summary</h2>
+      <div class="mt-4 space-y-2">
+        <div class="flex justify-between text-sm text-muted"><span>Subtotal</span><span>{{ subtotal | number:'1.2-2' }}DNT</span></div>
+        <div class="flex justify-between text-sm text-muted"><span>Shipping</span><span>Free</span></div>
+        <div class="flex justify-between pt-3 border-t border-border">
+          <span class="font-serif text-lg">Total</span>
+          <span class="font-serif text-lg">{{ subtotal | number:'1.2-2' }}DNT</span>
+        </div>
+      </div>
+      <button type="button" 
+        (click)="checkoutForm.onSubmit($event)"
+        [disabled]="checkoutForm.invalid || isLoading"
+        class="cursor-pointer w-full text-white text-sm font-medium tracking-widest uppercase py-3.5 rounded-sm mt-5 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        style="background:#D70D0D;">
+        <svg *ngIf="isLoading" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+        </svg>
+        {{ isLoading ? 'Processing...' : 'Pay with Konnect' }}
+      </button>  
+    </div>
+  </div>
+
+</main>
+<app-footer></app-footer>

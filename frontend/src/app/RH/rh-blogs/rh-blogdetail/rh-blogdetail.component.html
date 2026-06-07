@@ -1,0 +1,69 @@
+<app-rh-navbar></app-rh-navbar>
+
+<main class="min-h-screen bg-white">
+
+  <!-- Loading state -->
+  <div *ngIf="!blog" class="flex items-center justify-center min-h-screen">
+    <p class="text-slate-400 text-sm tracking-widest uppercase">Loading article...</p>
+  </div>
+
+  <!-- Blog Content -->
+  <div *ngIf="blog">
+    <!-- Cover Image -->
+    <div class="relative w-full h-64 sm:h-96 lg:h-130 overflow-hidden bg-linear-to-br from-teal-100 to-teal-50">
+      <img 
+        *ngIf="blog.imageUrl" 
+        [src]="blog.imageUrl" 
+        alt="Blog cover image" 
+        class="w-full h-full object-cover"/>
+      <div *ngIf="!blog.imageUrl" class="w-full h-full flex items-center justify-center">
+        <svg class="w-20 h-20 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+        </svg>
+      </div>
+      
+      <!-- Dark gradient overlay -->
+      <div class="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent"></div>
+    </div>
+
+    <!-- Article Content -->
+    <article class="max-w-6xl mx-auto -mt-16 relative z-10 bg-white rounded-2xl shadow-xl px-8 py-10 sm:px-12 sm:py-12 mb-16">
+      <!-- Back Button -->
+      <a
+        [routerLink]="['/RH-blog']"
+        class="inline-flex items-center gap-2 text-sm font-medium text-teal-600 hover:text-teal-800 transition-colors mb-6"
+        aria-label="Back to blog list"
+      >
+        <span aria-hidden="true">&larr;</span>
+        <span>Back to Articles</span>
+      </a>
+
+      <!-- Article Metadata -->
+      <div class="flex flex-wrap items-center gap-4 mb-6">
+        <span class="bg-teal-100 text-teal-700 text-xs font-semibold px-4 py-1.5 rounded-full capitalize">
+          {{ blog.type || 'Article' }}
+        </span>
+        <span class="text-slate-500 text-xs flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          {{ blog.createdAt }}
+        </span>
+      </div>
+
+      <!-- Divider -->
+      <hr class="border-slate-100 mb-8" />
+
+      <!-- Title -->
+      <h1 class="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight mb-8">{{ blog.title }}</h1>
+
+      <!-- Article Divider -->
+      <div class="w-12 h-1 bg-linear-to-r from-teal-500 to-teal-400 mb-8"></div>
+
+      <!-- Content -->
+      <div class="prose prose-lg max-w-none">
+        <p class="text-slate-700 leading-relaxed text-base sm:text-lg whitespace-pre-wrap">{{ blog.content }}</p>
+      </div>
+    </article>
+  </div>
+</main>

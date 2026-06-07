@@ -1,0 +1,269 @@
+<app-nav-bar></app-nav-bar>
+
+<div class="min-h-screen p-6" style="background:#f0f9fd;">
+  <div class="max-w-6xl mx-auto mb-8">
+
+    <!-- Header -->
+    <div class="relative rounded-3xl overflow-hidden p-10 mb-8" style="background:#18a2cd;">
+      <div class="absolute -top-8 -right-8 w-32 h-32 rounded-full opacity-20" style="background:#fbcb09;"></div>
+      <div class="absolute bottom-0 left-1/2 w-24 h-24 rounded-full opacity-10" style="background:#ee1d26;"></div>
+      <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <div class="flex gap-1.5 mb-3">
+            <span class="w-6 h-1.5 rounded-full" style="background:#fbcb09;"></span>
+            <span class="w-3 h-1.5 rounded-full" style="background:#ee1d26;"></span>
+            <span class="w-2 h-1.5 rounded-full" style="background:#92c744;"></span>
+          </div>
+          <h1 class="text-4xl font-black text-white tracking-tight mb-2">
+            Open <span style="color:#fbcb09;">Positions</span>
+          </h1>
+          <p class="text-white/70 text-sm max-w-md">Discover exciting career opportunities and become part of our growing team.</p>
+        </div>
+        <!-- Fixed: added (ngModelChange) to trigger filtering -->
+        <div class="flex items-center gap-2 bg-white/15 border border-white/25 rounded-full px-5 py-3 w-full md:w-80">
+          <svg class="w-4 h-4 text-white/60 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" stroke-linecap="round" stroke-width="2"/>
+          </svg>
+          <input
+            [(ngModel)]="searchtext"
+            (ngModelChange)="onSearchChange()"
+            type="text"
+            placeholder="Search positions..."
+            class="bg-transparent border-none outline-none text-white text-sm placeholder-white/50 w-full">
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="flex justify-center py-20">
+      <div class="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin" style="border-color:#18a2cd; border-top-color:transparent;"></div>
+    </div>
+
+    <!-- Empty -->
+    <div *ngIf="!loading && allJobOffers.length === 0" class="text-center py-20 text-gray-400">
+      <svg class="w-12 h-12 mx-auto mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      <p class="font-semibold">No open positions right now</p>
+      <p class="text-sm mt-1">Check back soon!</p>
+    </div>
+
+    <!-- CV Upload Notice -->
+    <div *ngIf="!loading && !hasCv" class="mb-8 p-4 bg-orange-50 border-l-4 border-orange-400 rounded">
+      <div class="flex items-start gap-3">
+        <svg class="w-6 h-6 text-orange-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4v2m0 4v2m4-17H8a2 2 0 00-2 2v14a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2z"/>
+        </svg>
+        <div>
+          <h3 class="font-semibold text-orange-800">CV Required</h3>
+          <p class="text-sm text-orange-700 mt-1">Upload your CV to apply for job positions and see personalized recommendations.</p>
+          <a routerLink="/profile" class="inline-block mt-2 px-4 py-2 bg-orange-600 text-white text-sm font-semibold rounded hover:bg-orange-700">Upload CV</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Recommendations -->
+    <div *ngIf="loadingRecommendations && hasCv" class="mb-12">
+      <h2 class="text-2xl font-black text-gray-800 mb-6">Recommended For You</h2>
+      <div class="relative bg-white rounded-2xl shadow-lg overflow-hidden p-8">
+        <div class="flex flex-col items-center justify-center h-96 gap-4">
+          <div class="w-12 h-12 border-4 border-t-transparent rounded-full animate-spin" style="border-color:#18a2cd; border-top-color:transparent;"></div>
+          <p class="text-gray-600 font-semibold text-lg">Finding jobs for you...</p>
+          <p class="text-gray-400 text-sm">This may take a moment</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommendations Carousel -->
+    <div *ngIf="!loading && hasCv && recommandation.length > 0 && !recError" class="mb-12">
+      <h2 class="text-2xl font-black text-gray-800 mb-6">Recommended For You</h2>
+      <div class="relative bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div *ngIf="carouselLoadingRec" class="flex justify-center items-center h-96">
+          <div class="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin" style="border-color:#18a2cd; border-top-color:transparent;"></div>
+        </div>
+        <div *ngIf="!carouselLoadingRec" class="relative h-96 overflow-hidden" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+          <div class="flex transition-transform duration-300" [style.transform]="'translateX(-' + currentCarouselIdx * 100 + '%)'">
+            <div *ngFor="let job of recommandation" class="min-w-full h-full p-8 flex flex-col justify-between">
+              <div >
+                <div class="flex h-1.5 mb-6 -mx-8 -mt-8">
+                  <span class="flex-1" style="background:#ee1d26;"></span>
+                  <span class="flex-1" style="background:#fbcb09;"></span>
+                  <span class="flex-1" style="background:#92c744;"></span>
+                  <span class="flex-1" style="background:#18a2cd;"></span>
+                </div>
+                
+                <!-- Header with relevance score -->
+                <div class="flex items-start justify-between mb-4">
+                  <div>
+                    <h3 class="text-3xl font-black text-gray-800 mb-2">{{ job.title }}</h3>
+                    <p class="text-lg font-semibold mb-3" style="color:#18a2cd;">{{ job.contractType }} · {{ job.location }}</p>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-sm font-bold px-3 py-1 rounded-full bg-blue-100 text-blue-700">
+                      {{ job.relevanceScore }}% Match
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Matching Reason -->
+                <div class="mb-4 p-3 bg-blue-50 border-l-4 border-blue-400 rounded">
+                  <p class="text-xs font-semibold text-blue-800 mb-1">Why recommended:</p>
+                  <p class="text-xs text-blue-700 leading-relaxed">{{ job.matchingReason }}</p>
+                </div>
+
+                <!-- Description -->
+                <p class="text-gray-600 mb-4 line-clamp-3">{{ job.description }}</p>
+
+                <!-- Skills -->
+                <div class="flex flex-wrap gap-2">
+                  <span *ngFor="let skill of getSkills(job.requiredSkills)"
+                    class="text-xs px-2.5 py-1 rounded-full font-semibold"
+                    style="background:#e8f7fc; color:#18a2cd;">{{ skill }}</span>
+                </div>
+              </div>
+
+              <!-- Footer with Apply button -->
+              <div class="flex items-center justify-end pt-4 border-t border-gray-200">
+                <button [routerLink]="['/apply', job.jobOfferId]"
+                  class="cursor-pointer px-6 py-2 rounded-xl text-white text-sm font-black uppercase tracking-wide transition hover:opacity-90 shadow-sm"
+                  style="background: linear-gradient(to right, #ef4444, #f97316);">
+                  Apply Now
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button *ngIf="!carouselLoadingRec && currentCarouselIdx > 0" (click)="prevCarousel()"
+          class="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <button *ngIf="!carouselLoadingRec && currentCarouselIdx < recommandation.length - 1" (click)="nextCarousel()"
+          class="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+        <div *ngIf="!carouselLoadingRec && recommandation.length > 0" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+          <button *ngFor="let item of recommandation; let i = index" (click)="currentCarouselIdx = i"
+            class="h-2 rounded-full transition-all duration-300"
+            [style.width]="i === currentCarouselIdx ? '24px' : '8px'"
+            [ngClass]="i === currentCarouselIdx ? 'bg-blue-600' : 'bg-gray-300'">
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommendations Error -->
+    <div *ngIf="!loading && hasCv && recError" class="mb-8 p-4 bg-red-50 border-l-4 border-red-400 rounded">
+      <div class="flex items-start gap-3">
+        <svg class="w-6 h-6 text-red-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <div>
+          <h3 class="font-semibold text-red-800">Could Not Load Recommendations</h3>
+          <p class="text-sm text-red-700 mt-1">{{ recError }}</p>
+          <button (click)="getRecommandation()" class="inline-block mt-2 px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded hover:bg-red-700">Try Again</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty Recommendations -->
+    <div *ngIf="!loading && hasCv && recommandation.length === 0 && !carouselLoadingRec && !recError" class="mb-12 p-8 bg-blue-50 rounded-2xl text-center">
+      <svg class="w-16 h-16 mx-auto mb-3 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+      </svg>
+      <p class="text-blue-800 font-semibold">No recommendations yet</p>
+      <p class="text-blue-600 text-sm mt-1">Check back soon as we find roles that match your profile!</p>
+    </div>
+
+    <!-- Cards grid -->
+    <div *ngIf="!loading" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+      <div *ngFor="let job of listJobOffers"
+        class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden">
+        <div class="flex h-1.5">
+          <span class="flex-1" style="background:#ee1d26;"></span>
+          <span class="flex-1" style="background:#fbcb09;"></span>
+          <span class="flex-1" style="background:#92c744;"></span>
+          <span class="flex-1" style="background:#18a2cd;"></span>
+        </div>
+        <div class="p-6 flex flex-col gap-4 flex-1">
+          <div class="flex items-start justify-between">
+            <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style="background:#e8f7fc;">
+              <svg class="w-5 h-5" style="color:#18a2cd;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <span class="text-xs font-bold px-3 py-1 rounded-full"
+              [ngClass]="job.active ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-500'">
+              {{ job.active ? 'Open' : 'Closed' }}
+            </span>
+          </div>
+          <div>
+            <h3 class="text-base font-black text-gray-800 mb-1">{{ job.title }}</h3>
+            <p class="text-xs font-semibold mb-3" style="color:#18a2cd;">{{ job.contractType }} · {{ job.location }}</p>
+            <p class="text-sm text-gray-500 leading-relaxed line-clamp-3">{{ job.description }}</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span *ngFor="let skill of getSkills(job.requiredSkills)"
+              class="text-xs px-2.5 py-1 rounded-full font-semibold"
+              style="background:#e8f7fc; color:#18a2cd;">{{ skill }}</span>
+          </div>
+          <div class="flex items-center justify-between pt-3 border-t border-gray-100 mt-auto">
+            <div class="flex items-center gap-1.5 text-xs text-gray-400">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              {{ getTimeAgo(job.postedAt) }}
+            </div>
+            <button *ngIf="job.active" [routerLink]="['/apply', job.id]"
+              class="cursor-pointer px-4 py-2 rounded-xl text-white text-xs font-black uppercase tracking-wide transition hover:opacity-90 shadow-sm"
+              style="background: linear-gradient(to right, #ef4444, #f97316);">
+              Apply Now
+            </button>
+            <span *ngIf="!job.active" class="text-xs text-gray-400 font-semibold">Closed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ Pagination -->
+    <div *ngIf="!loading && totalPages > 1" class="flex items-center justify-center gap-2 mt-10 flex-wrap">
+      <!-- Prev -->
+      <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1"
+        class="px-3 py-2 rounded-xl border text-sm font-semibold transition"
+        [ngClass]="currentPage === 1 ? 'border-gray-200 text-gray-300 cursor-not-allowed' : 'border-gray-300 text-gray-600 hover:bg-gray-100'">
+        ← Prev
+      </button>
+
+      <!-- Page numbers -->
+      <ng-container *ngFor="let page of getPagesArray(); let i = index">
+        <span *ngIf="showEllipsisBefore(page, i, getPagesArray())" class="px-2 text-gray-400 select-none">…</span>
+        <button (click)="goToPage(page)"
+          class="w-9 h-9 rounded-xl text-sm font-semibold transition"
+          [ngClass]="page === currentPage
+            ? 'text-white shadow-sm'
+            : 'border border-gray-200 text-gray-600 hover:bg-gray-100'"
+          [style.background]="page === currentPage ? '#18a2cd' : ''">
+          {{ page }}
+        </button>
+      </ng-container>
+
+      <!-- Next -->
+      <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages"
+        class="px-3 py-2 rounded-xl border text-sm font-semibold transition"
+        [ngClass]="currentPage === totalPages ? 'border-gray-200 text-gray-300 cursor-not-allowed' : 'border-gray-300 text-gray-600 hover:bg-gray-100'">
+        Next →
+      </button>
+    </div>
+
+    <!-- Page info -->
+    <p *ngIf="!loading && totalPages > 1" class="text-center text-xs text-gray-400 mt-3">
+      Page {{ currentPage }} of {{ totalPages }}
+    </p>
+
+  </div>
+</div>
+
+<app-footer></app-footer>

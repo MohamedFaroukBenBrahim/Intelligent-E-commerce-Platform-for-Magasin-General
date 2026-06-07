@@ -1,0 +1,61 @@
+<app-nav-bar></app-nav-bar>
+
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="relative flex flex-col m-6 space-y-8 bg-white shadow-2xl rounded-2xl md:flex-row md:space-y-0">
+        <div class="flex flex-col justify-center p-8 md:p-14">
+            <form (ngSubmit)="login()" *ngIf="!showForgotPassword">
+                <div class="mb-6">
+                    <h1 class="text-4xl font-bold mb-2">Welcome back !</h1>
+                    <p class="font-light text-gray-400">Login here</p>
+                </div>
+                <div class="py-4">
+                    <span class="mb-2 text-md">Email</span>
+                    <input type="email" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" [(ngModel)]="loginData.email" name="Email" required>
+                </div>        
+                <div class="py-4">
+                    <span class="mb-2 text-md">Password</span>
+                    <input type="password" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" [(ngModel)]="loginData.password" name="password" required>
+                </div>
+                <div class="flex-justify-between w-full py-4">
+                    <a class="font-bold text-md cursor-pointer" (click)="toggleForgotPassword()" > Forgot Password</a>  
+                </div>
+                <div *ngIf="error" class="text-red-300 text-sm sm:text-base">{{ error }}</div>
+                <button type="submit" class="w-full bg-red-700 text-white p-2 rounded-lg mb-6 hover:bg-white hover:text-black hover:border hover:border-gray-300 cursor-pointer">Login</button>
+            </form>
+                <button *ngIf="!showForgotPassword" type="button" (click)="loginWithGoogle()"  class="w-full border border-gray-300 text-md p-2 rounded-lg mb-6 hover:bg-black hover:text-white">Log in with google </button>
+                <div *ngIf="!showForgotPassword" class="text-center text-gray-400">
+                    Don't have an account ?
+                    <a class="font-bold text-black" [routerLink]="['/signup']">Sign Up for free !</a>
+                </div>
+            <div *ngIf="showForgotPassword" class="w-full max-w-md mx-auto px-4">
+                <p class="mb-2 text-sm sm:text-md">Enter your email to receive a reset code</p>
+                <form (ngSubmit)="forgotPassword()">
+                    <div class="form-group">
+                        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">Forgot Password!</h1>
+                        <input type="email" class="w-full p-2 border border-gray-300 rounded-md placeholder:font-light placeholder:text-gray-500" [(ngModel)]="forgotPasswordEmail" name="forgotPasswordEmail" placeholder="Enter your Email" required>
+                    </div>
+                    <button class="w-full bg-red-700 text-white p-2 rounded-lg mb-6 hover:bg-white hover:text-black hover:border hover:border-gray-300" type="submit">Send Reset Code</button>
+                </form>
+                <p class="text-sm sm:text-base">Remember your password? <button type="button" class="w-full border border-gray-300 text-sm sm:text-md p-2 rounded-lg mb-6 hover:bg-black hover:text-white" (click)="toggleForgotPassword()">Back to Login</button></p>
+                <div *ngIf="error" class="text-red-300 text-sm sm:text-base">{{ error }}</div>
+                <div *ngIf="forgotPasswordSuccess" class="text-green-300 text-sm sm:text-base">{{ forgotPasswordSuccess }}</div>
+            </div>
+        </div>
+        <div class="relative">
+            <img src="/assets/login3.png" alt="img" class="w-200 h-full hidden rounded-r-2xl md:block object-cover"/>
+            <div class="absolute hidden bottom-10 right-6 p-6 bg-white/30 backdrop-blur-sm rounded drop-shadow-lg md:block">
+                <span class="text-white text-xl">Quality you trust.Prices you love.  <br />Welcome to MG. <br />imagine living without it.</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showSignupPopup" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+    <div class="bg-white rounded-2xl p-3 shadow-2xl animate-pulse">
+        <img src="/assets/signup.png" alt="Welcome" class="w-72 sm:w-80 md:w-96 rounded-xl object-cover" />
+    </div>
+</div>
+
+
+<!-- FOOTER DONT TOUCH I AM EDITING IT -->
+<app-footer></app-footer>

@@ -1,0 +1,65 @@
+<app-admin-sidebar></app-admin-sidebar>
+
+<div class="ml-14 md:ml-64 mt-14 min-h-screen bg-gray-100">
+  <div class="w-full container xl:w-11/12 px-4 mx-auto py-8">
+    <div class="flex flex-col w-full mb-6 shadow-lg rounded bg-white">
+      <header class="rounded-t mb-0 px-4 py-3 border-0">
+        <div class="flex flex-wrap justify-between items-center">
+          <h1 class="font-semibold text-2xl text-zinc-700 mr-2">Orders</h1>
+        </div>
+      </header>
+      <div class="px-4 pb-5">
+        <!-- Empty State -->
+        <div *ngIf="orders.length === 0" class="text-center py-8">
+          <p class="text-gray-500">No orders found</p>
+        </div>
+
+        <!-- Orders Table -->
+        <div *ngIf="orders.length > 0" class="overflow-x-auto">
+          <table class="w-full min-w-max text-sm text-left">
+            <thead>
+              <tr class="border-b border-purple-600 text-slate-600 font-bold">
+                <th class="px-2 py-3 text-center">Order ID</th>
+                <th class="px-2 py-3 text-center">User</th>
+                <th class="px-2 py-3 text-center">Total Amount</th>
+                <th class="px-2 py-3 text-center">Shipping Address</th>
+                <th class="px-2 py-3 text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let order of orders" class="border-b last:border-0 hover:bg-gray-50">
+                <td class="px-2 py-3 text-center text-zinc-500">{{order.id}}</td>
+                <td class="px-2 py-3 text-center text-zinc-500">{{order.user?.username || order.user?.id}}</td>
+                <td class="px-2 py-3 text-center text-zinc-500">{{order.totalAmount}} DNT</td>
+                <td class="px-2 py-3 text-center text-zinc-500 max-w-xs">
+                  <p class="truncate" title="{{order.shippingAddress}}">{{order.shippingAddress}}</p>
+                </td>
+                <td class="px-2 py-3 text-center">
+                  <select
+                    [(ngModel)]="order.status"
+                    (ngModelChange)="updateStatus(order.id, order.status)"
+                    [disabled]="order.status === 'CANCELLED'"
+                    class="text-xs font-medium px-2 py-1 rounded-[10px] border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    [ngClass]="{
+                      'bg-blue-100 text-blue-700':   order.status === 'PENDING',
+                      'bg-purple-100 text-purple-700': order.status === 'CONFIRMED',
+                      'bg-yellow-100 text-yellow-700': order.status === 'SHIPPED',
+                      'bg-green-100 text-green-700':  order.status === 'DELIVERED',
+                      'bg-red-100 text-red-700 ':      order.status === 'CANCELLED',
+                      }">
+                    <!-- ✅ Fix - match your backend enum exactly -->
+                    <option value="PENDING">PENDING</option>
+                    <option value="CONFIRMED">CONFIRMED</option>
+                    <option value="SHIPPED">SHIPPED</option>
+                    <option value="DELIVERED">DELIVERED</option>
+                    <option value="CANCELLED">CANCELLED</option>
+                  </select>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

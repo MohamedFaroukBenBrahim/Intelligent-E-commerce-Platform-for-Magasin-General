@@ -1,0 +1,26 @@
+<app-admin-sidebar></app-admin-sidebar>
+<!-- add part -->
+ 
+    <div class="w-full container xl:w-10/12 px-4 mx-auto py-24">
+        <div class="max-w-4xl p-6 mx-auto bg-white rounded-md shadow-md ">
+            <a class="text-blue-600 hover:text-blue-800 font-medium mb-4 inline-block" [routerLink]="['/admin-categorys']">← Back to Blogs</a>
+            <h2 class="text-lg font-semibold text-gray-700 capitalize ">Update Category</h2>
+            <form (ngSubmit)="edit()">
+                <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-1">
+                    <div>
+                        <label class="text-gray-700 " for="name">Name</label>
+                        <input [(ngModel)]="category.name" name="name"  id="name" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md  focus:border-blue-500  focus:outline-none focus:ring">
+                    </div>
+
+                    <div>
+                        <label class="text-gray-700 " for="Description">Description</label>
+                        <input [(ngModel)]="category.description" name="description" id="Description" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md  focus:border-blue-500  focus:outline-none focus:ring">
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-6">
+                    <button type="submit" class="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>

@@ -1,0 +1,272 @@
+<app-nav-bar></app-nav-bar>
+<div class="w-full min-h-screen overflow-x-hidden">
+  <div class="w-full max-w-8xl rounded bg-white shadow-xl p-10 lg:p-20 mx-auto text-gray-800 relative md:text-left overflow-x-hidden">
+    <div class="md:flex items-center gap-0 lg:gap-0">
+            <div class="w-full md:w-1/2 px-10 mb-10 md:mb-0  ">
+                <a [routerLink]="['/listProducts']" class="inline-flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-red-500 transition-colors mb-10 group">
+                    <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Back to Products
+                </a>
+                <div class="relative">
+                    <!-- Decorative offset border -->
+                    <div class="absolute top-5 left-5 right-0 bottom-0 rounded-2xl border-2 border-red-200 z-0"></div>
+                    <div class="relative z-10 rounded-2xl overflow-hidden bg-white shadow-lg aspect-square">
+                        <img  [src]="imagePreview"   class="w-full h-full object-cover" alt="Product Image">
+                        <div *ngIf="product.discount>0" class="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow">-{{product.discount}}% OFF</div>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 px-10">
+                <div>
+                    <span class="text-xs font-semibold uppercase tracking-widest text-red-400 bg-red-50 px-3 py-1 rounded-full">{{product.category?.name}}</span>
+                    <h1 class="font-display text-4xl font-bold mt-3 leading-tight text-gray-900">{{product.name}}</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="flex gap-0.5">
+                    <svg *ngFor="let s of getStars(product.rate)"
+                      class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118L10 15.347l-3.95 2.878c-.784.57-1.838-.197-1.539-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.065 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69L9.05 2.927z"/>
+                    </svg>
+                    <svg *ngFor="let s of getEmptyStars(product.rate)"
+                      class="w-5 h-5 text-gray-200 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118L10 15.347l-3.95 2.878c-.784.57-1.838-.197-1.539-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.065 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69L9.05 2.927z"/>
+                    </svg>
+                  </div>
+                  <span class="text-sm text-gray-500 font-medium">
+                    {{ product.rate | number:'1.1-1' }}
+                    <span class="text-gray-300">·</span>
+                    {{ reviewlist.length }} reviews
+                  </span>
+                </div>
+                <!-- Description -->
+                <p class="text-gray-500 text-sm leading-relaxed">{{product.description}}</p>
+                <div>
+                    <!-- Success Alert -->
+                    <div *ngIf="showSuccessAlert" 
+                        class="flex bg-green-300 max-w-sm mb-4 rounded-2xl transition-all duration-300">
+                    <div class="w-16 bg-green-500 flex items-center justify-center rounded-l-2xl">
+                        <div class="p-4">
+                        <svg class="h-8 w-8 text-white fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                            <path d="M468.907 214.604c-11.423 0-20.682 9.26-20.682 20.682v20.831c-.031 54.338-21.221 105.412-59.666 143.812-38.417 38.372-89.467 59.5-143.761 59.5h-.12C132.506 459.365 41.3 368.056 41.364 255.883c.031-54.337 21.221-105.411 59.667-143.813 38.417-38.372 89.468-59.5 143.761-59.5h.12c28.672.016 56.49 5.942 82.68 17.611 10.436 4.65 22.659-.041 27.309-10.474 4.648-10.433-.04-22.659-10.474-27.309-31.516-14.043-64.989-21.173-99.492-21.192h-.144c-65.329 0-126.767 25.428-172.993 71.6C25.536 129.014.038 190.473 0 255.861c-.037 65.386 25.389 126.874 71.599 173.136 46.21 46.262 107.668 71.798h.144c65.329 0 126.767-25.427 172.993-71.6 46.262-46.209 71.76-107.668 71.798-173.066v-20.842c0-11.423-9.259-20.683-20.682-20.683z"/><path d="M505.942 39.803c-8.077-8.076-21.172-8.076-29.249 0L244.794 271.701l-52.609-52.609c-8.076-8.077-21.172-8.077-29.248 0-8.077 8.077-8.077 21.172 0 29.249l67.234 67.234a20.616 20.616 0 0 0 14.625 6.058 20.618 20.618 0 0 0 14.625-6.058L505.942 69.052c8.077-8.077 8.077-21.172 0-29.249z"/>
+                        </svg>
+                        </div>
+                    </div>
+                    <div class="w-auto text-grey-darker items-center p-4">
+                        <span class="text-lg font-bold pb-4">Added to Cart!</span>
+                        <p class="leading-tight">{{ product.name }} has been added to your cart successfully.</p>
+                    </div>
+                    </div>
+                    <!-- Error alert -->
+                    <div *ngIf="showErrorAlert"  class="flex bg-red-300 max-w-sm mb-4 rounded-2xl">
+                        <div class="w-16 bg-red-500 rounded-l-2xl flex items-center justify-center">
+                            <div class="p-4">
+                            <svg class="h-8 w-8 text-white fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M437.019 74.981C388.667 26.629 324.38 0 256 0S123.333 26.63 74.981 74.981 0 187.62 0 256s26.629 132.667 74.981 181.019C123.332 485.371 187.62 512 256 512s132.667-26.629 181.019-74.981C485.371 388.667 512 324.38 512 256s-26.629-132.668-74.981-181.019zM256 470.636C137.65 470.636 41.364 374.35 41.364 256S137.65 41.364 256 41.364 470.636 137.65 470.636 256 374.35 470.636 256 470.636z" fill="#FFF"/><path d="M341.22 170.781c-8.077-8.077-21.172-8.077-29.249 0L170.78 311.971c-8.077 8.077-8.077 21.172 0 29.249 4.038 4.039 9.332 6.058 14.625 6.058s10.587-2.019 14.625-6.058l141.19-141.191c8.076-8.076 8.076-21.171 0-29.248z" fill="#FFF"/><path d="M341.22 311.971l-141.191-141.19c-8.076-8.077-21.172-8.077-29.248 0-8.077 8.076-8.077 21.171 0 29.248l141.19 141.191a20.616 20.616 0 0 0 14.625 6.058 20.618 20.618 0 0 0 14.625-6.058c8.075-8.077 8.075-21.172-.001-29.249z" fill="#FFF"/></svg>
+                            </div>
+                        </div>
+                        <div class="w-auto text-grey-darker items-center p-4">
+                            <span class="text-lg font-bold pb-4">
+                                Error Failed to Add to cart
+                            </span>
+                            <p class="leading-tight">
+                                {{ product.name }} is either out of stock or you have it in your Cart.
+                            </p>
+                        </div>
+                    </div>
+                    <div *ngIf="product.discount > 0" class="inline-block align-bottom mr-5">
+                        <span class="font-bold text-5xl leading-none align-baseline">{{product.price - (product.discount * product.price) / 100 | number:'1.2-2'}}</span>
+                        <span class="text-2xl leading-none align-baseline">DNT</span>
+                        <span class="font-bold text-3xl leading-none align-baseline line-through">{{product.price}}</span>
+                        <span class="text-2xl leading-none align-baseline">DNT</span>
+                    </div>
+                    <div *ngIf="product.discount == 0" class="inline-block align-bottom mr-5">
+                        <span class="font-bold text-5xl leading-none align-baseline">{{product.price}}</span>
+                        <span class="text-2xl leading-none align-baseline">DNT</span>
+                    </div>
+                    <div *ngIf="product.quantity > 0" class="flex items-center gap-1.5 text-xs font-medium text-green-600">
+                        <span class="w-2 h-2 rounded-full bg-green-600 inline-block"></span> In Stock
+                    </div>
+                    <div *ngIf="product.quantity === 0" class="flex items-center gap-1.5 text-xs font-medium text-red-600">
+                        <span class="w-2 h-2 rounded-full bg-red-600 inline-block"></span> Out of Stock
+                    </div>
+                    <div class="mb-8">
+                        <label class="block text-sm font-semibold text-gray-600 mb-3">Quantity</label>
+                        <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-2 shadow-sm">
+                            <button (click)="quantity > 1 ? quantity = quantity - 1 : null" class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 hover:text-red-500 transition text-gray-500 font-bold text-lg">−</button>
+                            <span class="w-8 text-center font-bold text-lg">{{ quantity }}</span>
+                            <button (click)="quantity < product.quantity ? quantity = quantity + 1 : null" class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-red-50 hover:text-red-500 transition text-gray-500 font-bold text-lg">+</button>
+                        </div>
+                        <span class="text-xs text-gray-400">{{ product.quantity }} available</span>
+                        </div>
+                        <!-- Progress bar -->
+                        <div class="mt-3 w-52 bg-gray-100 rounded-full h-1.5">
+                        <div class="bg-red-400 h-1.5 rounded-full w-1/12" [style.width.%]="(quantity / product.quantity) * 100" ></div>
+                        </div>
+                    </div>
+                    <form (ngSubmit)="addToCart()">
+                        <button class="w-full py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold text-sm tracking-widest uppercase transition-all shadow-lg hover:shadow-red-200 hover:shadow-xl active:scale-95" [disabled]="product.quantity === 0"[class.opacity-50]="product.quantity === 0"[class.cursor-not-allowed]="product.quantity === 0">{{ product.quantity === 0 ? 'Out of Stock' : 'Add to Cart' }}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<!-- ───────────────────────────── REVIEWS SECTION ───────────────────────────── -->
+<section class="max-w-7xl mx-auto px-6 pb-20">
+
+  <div class="border-t border-gray-200 pt-14">
+
+    <!-- Section header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+      <div>
+        <h2 class="font-display text-3xl font-bold text-gray-900">Customer Reviews</h2>
+        <p class="text-sm text-gray-400 mt-1">What people are saying about this product</p>
+      </div>
+      <button *ngIf="!hasReviewed" (click)="showCraeteReviewSection=true" class="self-start sm:self-auto px-6 py-2.5 border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded-xl text-sm font-bold transition-all">
+          Write a Review
+      </button>
+        <div *ngIf="hasReviewed" class="self-start sm:self-auto flex items-center gap-2 px-6 py-2.5 bg-green-50 border-2 border-green-200 text-green-600 rounded-xl text-sm font-bold">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+          Review Submitted
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-8 flex flex-col sm:flex-row gap-8 items-center">
+      <div class="text-center shrink-0">
+        <p class="font-display text-6xl font-bold text-gray-900">{{ averageRating }}</p>
+        <div class="flex justify-center gap-0.5 mt-2">
+          <svg *ngFor="let s of getStars(averageRating)"
+            class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118L10 15.347l-3.95 2.878c-.784.57-1.838-.197-1.539-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.065 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69L9.05 2.927z"/>
+          </svg>
+          <svg *ngFor="let s of getEmptyStars(averageRating)"
+            class="w-5 h-5 text-gray-200 fill-current" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118L10 15.347l-3.95 2.878c-.784.57-1.838-.197-1.539-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.065 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69L9.05 2.927z"/>
+          </svg>
+        </div>
+        <p class="text-xs text-gray-400 mt-1">{{ reviewlist.length }} reviews</p>
+      </div>
+
+      <!-- Bar breakdown -->
+      <div class="flex-1 w-full space-y-2">
+        <div *ngFor="let star of [5,4,3,2,1]" class="flex items-center gap-3 text-sm">
+          <span class="text-gray-500 w-4 text-right">{{ star }}</span>
+          <div class="flex-1 bg-gray-100 rounded-full h-2">
+            <div class="bg-yellow-400 h-2 rounded-full transition-all duration-500"
+              [style.width.%]="getRatingPercent(star)"
+              [class.bg-red-300]="star === 1">
+            </div>
+          </div>
+          <span class="text-gray-400 text-xs w-6">{{ ratingCounts[star] }}</span>
+        </div>
+      </div>
+    </div>
+    <!-- Write a Review Form -->
+    <div *ngIf="showCraeteReviewSection" class="bg-white rounded-2xl border border-red-100 shadow-sm p-6 mb-8">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-lg font-bold text-gray-800">Write a Review</h3>
+        
+        <button (click)="showCraeteReviewSection=false"
+          class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    
+      <form (ngSubmit)="submitReview()">
+        <div class="space-y-5">
+
+          <!-- Star Rating Picker -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-600 mb-2">Your Rating</label>
+            <div class="flex gap-1">
+              <svg *ngFor="let star of [1,2,3,4,5]"
+                (click)="newReview.rating = star"
+                (mouseenter)="hoveredStar = star"
+                (mouseleave)="hoveredStar = 0"
+                class="w-8 h-8 cursor-pointer transition-colors"
+                [class.text-yellow-400]="star <= (hoveredStar || newReview.rating)"
+                [class.text-gray-200]="star > (hoveredStar || newReview.rating)"
+                fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118L10 15.347l-3.95 2.878c-.784.57-1.838-.197-1.539-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.065 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69L9.05 2.927z"/>
+              </svg>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">{{ newReview.rating === 0 ? 'Click to rate' : newReview.rating + ' / 5 stars' }}</p>
+          </div>
+          <!-- Comment -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-600 mb-2">Your Review</label>
+            <textarea [(ngModel)]="newReview.comment" name="comment" rows="4" placeholder="Share your experience with this product..." class="block w-full px-4 py-3 text-sm text-gray-700 bg-white border border-gray-200 rounded-xl focus:border-red-400 focus:outline-none focus:ring-1 focus:ring-red-100 resize-none">
+            </textarea>
+          </div>
+          <!-- Buttons -->
+          <div class="flex justify-end gap-3 pt-1">
+            <button type="button" (click)="showCraeteReviewSection=false" class="px-5 py-2.5 text-sm font-semibold text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition">
+              Cancel
+            </button>
+            <button type="submit" [disabled]="newReview.rating === 0 || !newReview.comment" class="px-5 py-2.5 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed">
+              Submit Review
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <!-- Review cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div *ngFor="let review of reviewlist" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col gap-4 hover:shadow-md transition-shadow">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <img *ngIf="review.userProfilePicture" [src]="review.userProfilePicture" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+            <div *ngIf="!review.userProfilePicture" class="w-10 h-10 rounded-full bg-red-100 text-red-500 font-bold flex items-center justify-center text-sm">
+              {{ review.username?.charAt(0)?.toUpperCase() }}
+            </div>
+            <div>
+              <p class="font-semibold text-sm text-gray-800">{{ review.username }}</p>
+              <p class="text-xs text-gray-400">{{ review.createdAt | date:'mediumDate' }}</p>
+            </div>
+          </div>
+          <div class="flex gap-0.5">
+            <svg *ngFor="let star of getStars(review.rating)"
+              class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118L10 15.347l-3.95 2.878c-.784.57-1.838-.197-1.539-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.065 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69L9.05 2.927z"/>
+            </svg>
+          </div>
+        </div>
+        <p class="text-sm text-gray-500 leading-relaxed">{{ review.comment }}</p>
+      </div>
+    </div>
+    <!-- Recommendation section -->
+    <div *ngIf="userID" class="px-6 sm:px-10 mb-6">
+      <h3 class="text-gray-900 font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-tight">
+        Recommended <span style="color:#D70D0D;">for you</span>
+      </h3>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm px-4 sm:px-6 py-4 overflow-x-auto overflow-y-hidden hide-scrollbar" style="scroll-behavior: smooth;">
+      <div class="flex gap-5 w-max py-2 pr-2">
+        <div *ngFor="let product of recommandation" class=" relative w-64 sm:w-72 h-80 bg-white border border-gray-100 shadow-sm duration-300 hover:scale-[1.02] hover:shadow-xl hover:border-red-200 hover:z-10 overflow-hidden group">
+          <a [routerLink]="['/product-detail/', product.id]">
+            <img [src]="product.image_url" [alt]="product.name" class="w-full h-full object-contain p-8 bg-white" />
+            <div class="absolute top-0 left-0 right-0 h-1.5" style="background:#D70D0D"></div>
+            <div class="absolute top-4 left-6 text-black text-xs font-black z-10 drop-shadow-lg tracking-[0.3em] uppercase">
+              {{ product.category_name }}
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 px-4 py-4 bg-white border-t-2" style="border-color:#D70D0D;">
+              <p class="text-gray-900 font-bold text-base truncate capitalize mb-1">{{ product.name }}</p>
+              <p class="font-bold text-lg" style="color:#D70D0D;">{{ product.price }} DNT</p>
+              <p class="text-gray-400 text-xs truncate mt-1">{{ product.description }}</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<app-footer></app-footer>

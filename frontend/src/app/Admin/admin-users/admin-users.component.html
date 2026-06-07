@@ -1,0 +1,78 @@
+<app-admin-sidebar></app-admin-sidebar>
+
+<div class="ml-14 md:ml-64 mt-14 min-h-screen bg-gray-100">
+  <div class="w-full container xl:w-11/12 px-4 mx-auto py-8">
+    <div class="flex flex-col w-full mb-6 shadow-lg rounded bg-white">
+      <header class="rounded-t mb-0 px-4 py-3 border-0">
+        <div class="flex flex-wrap justify-between items-center">
+          <h1 class="font-semibold text-2xl text-zinc-700 mr-2">users</h1>
+          <input
+            type="search"
+            [(ngModel)]="searchtext"
+            (ngModelChange)="search()"
+            class="bg-gray-100 shadow rounded border border-gray-200 p-2 text-sm w-140 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder="Search Users..."/>
+        </div>
+      </header>
+      <div class="px-4 pb-5">
+        <div *ngIf="users.length === 0" class="text-center py-8">
+          <p class="text-gray-500">No users found</p>
+        </div>
+
+        <div *ngIf="users.length > 0" class="overflow-x-auto">
+          <table class="w-full min-w-max text-sm text-left">
+            <thead>
+              <tr class="border-b border-purple-600 text-slate-600 font-bold">
+                <th class="px-3 py-3 text-left">User</th>
+                <th class="px-3 py-3 text-center">Role</th>
+                <th class="px-3 py-3 text-center">Account</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of users" class="border-b last:border-0 hover:bg-slate-50" [hidden]="user.role === 'ADMIN'">
+                <td class="px-3 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="h-11 w-11 rounded-full overflow-hidden bg-slate-200 flex items-center justify-center text-slate-700 font-bold text-sm">
+                      <img *ngIf="user.profilePictureUrl" [src]="user.profilePictureUrl" [alt]="user.username" class="h-full w-full object-cover" />
+                      <span *ngIf="!user.profilePictureUrl">{{ getInitial(user.username) }}</span>
+                    </div>
+                    <div class="min-w-0">
+                      <p class="font-semibold text-slate-800 truncate">{{ user.username }}</p>
+                      <p class="text-xs text-slate-500 truncate">#{{ user.id }} • {{ user.email }}</p>
+                    </div>
+                  </div>
+                </td>
+
+                <td class="px-3 py-4 text-center">
+                  <div class="flex items-center justify-center gap-2">
+                    <button
+                      (click)="toggleHrRole(user.id)"
+                      [disabled]="isUserProcessing(user.id)"
+                      class="px-3 py-1 min-w-20 max-w-30 text-xs font-semibold rounded-md border transition-colors"
+                      [ngClass]="user.role === 'RH'
+                        ? 'border-amber-500 bg-amber-500 text-white hover:bg-white hover:text-amber-500'
+                        : 'border-blue-600 bg-blue-600 text-white hover:bg-white hover:text-blue-600'">
+                      {{ isUserProcessing(user.id) ? 'Saving...' : (user.role === 'RH' ? 'Set USER' : 'Set HR') }}
+                    </button>
+                  </div>
+                </td>
+
+                <td class="px-3 py-4 text-center">
+                  <button
+                    (click)="disable(user.id)"
+                    [disabled]="isUserProcessing(user.id)"
+                    class="px-4 py-1 text-sm font-medium text-white rounded-md transition-colors border-2"
+                    [ngClass]="user.enabled === false
+                      ? 'border-gray-500 bg-gray-500 hover:bg-white hover:text-gray-500'
+                      : 'border-red-600 bg-red-600 hover:bg-white hover:text-red-600'">
+                    {{ isUserProcessing(user.id) ? 'Saving...' : (user.enabled === false ? 'Enable' : 'Disable') }}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

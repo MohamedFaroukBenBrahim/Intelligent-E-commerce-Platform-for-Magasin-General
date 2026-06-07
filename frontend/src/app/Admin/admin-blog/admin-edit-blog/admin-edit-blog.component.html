@@ -1,0 +1,54 @@
+<app-admin-sidebar></app-admin-sidebar>
+<!-- edit part -->
+
+<div class="ml-14 md:ml-64 p-6 bg-gray-100 min-h-screen">
+    <div class="w-full container xl:w-10/12 mx-auto">
+        <div class="max-w-4xl p-6 mx-auto bg-white rounded-md shadow-md">
+            <a class="text-blue-600 hover:text-blue-800 font-medium mb-4 inline-block" [routerLink]="['/admin-blog']">← Back to Blogs</a>
+            <h2 class="text-lg font-semibold text-gray-700 capitalize">Edit Blog Post</h2>
+
+            <div *ngIf="loading" class="text-center py-6">
+                <p class="text-gray-500">Loading blog...</p>
+            </div>
+
+            <form *ngIf="!loading && blog" (ngSubmit)="update()">
+                <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
+                    <div class="sm:col-span-2">
+                        <label class="text-gray-700" for="title">Title</label>
+                        <input [(ngModel)]="blog.title" name="title" id="title" type="text" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="text-gray-700" for="content">Content</label>
+                        <textarea [(ngModel)]="blog.content" name="content" id="content" rows="6" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="text-gray-700" for="type">Type</label>
+                        <select [(ngModel)]="blog.type" name="type" id="type" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring">
+                            <option value="">Select Type</option>
+                            <option value="NEWS">News</option>
+                            <option value="EVENT">Event</option>
+                            <option value="ANNOUNCEMENT">Announcement</option>
+                        </select>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="text-gray-700" for="image">Update Image (Optional)</label>
+                        <input (change)="onFileSelected($event)" name="image" id="image" type="file" accept="image/*" class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring">
+                        <p class="text-sm text-gray-500 mt-1">Leave empty to keep existing image</p>
+                    </div>
+
+                    <div *ngIf="imagePreview" class="sm:col-span-2">
+                        <label class="text-gray-700">Image Preview</label>
+                        <img [src]="imagePreview" alt="Preview" class="mt-2 h-40 object-cover rounded border">
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-6 gap-3">
+                    <button type="button" [routerLink]="['/admin-blog']" class="px-6 py-2 leading-5 text-gray-700 transition-colors duration-200 transform bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none">Cancel</button>
+                    <button type="submit" class="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:bg-green-700">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,10 @@
+body { font-family: 'Sora', sans-serif; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+input[type="range"] { accent-color: #d4380d; }
+input[type="checkbox"] { accent-color: #d4380d; }
+.card-hover { transition: transform 0.2s, box-shadow 0.2s; }
+.card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.11); }
+.card-hover:hover .img-inner { transform: scale(1.06); }
+.img-inner { transition: transform 0.3s ease; }
+.swatch { transition: transform 0.2s, border-color 0.2s; }
+.swatch:hover { transform: scale(1.15); }
