@@ -13,13 +13,13 @@ def add_cors_headers(response):
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
     return response
 
-# 👇 change to your MySQL credentials
+
 from sqlalchemy.engine import URL
 
 DB_URL = URL.create(
     drivername="mysql+pymysql",
-    username="root",
-    password="MFBB@555",
+    username="",
+    password="",
     host="127.0.0.1", 
     port=3306,
     database="mg"
