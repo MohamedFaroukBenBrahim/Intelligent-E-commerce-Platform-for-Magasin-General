@@ -23,7 +23,7 @@ Email Verification
 Password Recovery
 Logout Functionality
 
-<img width="1868" height="925" alt="Opera Snapshot_2026-04-30_152800_localhost" src="https://github.com/user-attachments/assets/bb765ea8-9dd3-4b19-a817-b52f674eb634" /><img width="1868" height="925" alt="Opera Snapshot_2026-04-30_152733_localhost" src="https://github.com/user-attachments/assets/2d98e5ec-8256-4f2f-b547-bf6cd336efbd" />
+<img width="1868" height="925" alt="Opera Snapshot_2026-04-30_152800_localhost" src="https://github.com/user-attachments/assets/bb765ea8-9dd3-4b19-a817-b52f674eb634" />
 <img width="1868" height="925" alt="Opera Snapshot_2026-04-30_152815_localhost" src="https://github.com/user-attachments/assets/aef090eb-06be-4e1a-bc32-1ffc3cd554a6" />
 
 
